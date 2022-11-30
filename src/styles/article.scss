@@ -1,0 +1,111 @@
+.article {
+  padding: 30px 0;
+
+  color: #333;
+
+  font-size: 18px;
+  > pre,
+  > image,
+  > ul,
+  > ol,
+  > p,
+  > div {
+    margin-bottom: 20px;
+  }
+  > ul li,
+  > ol li {
+    margin-bottom: 10px;
+  }
+
+  h2,
+  h3,
+  h4 {
+    margin-bottom: 40px;
+    padding-top: 20px;
+  }
+
+  h2 {
+    font-size: 32px;
+  }
+  h3 {
+    font-size: 26px;
+  }
+  h4 {
+    font-size: 20px;
+  }
+  blockquote {
+    position: relative;
+
+    padding: 6px 10px;
+
+    border-radius: 2px;
+    background-color: #f2f6fa;
+
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      width: 4px;
+      height: 100%;
+
+      content: '';
+
+      background-color: #72a1ed;
+    }
+    p {
+      font-size: 16px;
+      br {
+        display: block;
+
+        height: 0.5em;
+
+        content: '';
+
+        font-size: 100%;
+      }
+    }
+  }
+  p > code {
+    padding: 4px;
+
+    color: #333;
+    border-radius: 4px;
+    background-color: rgb(255, 220, 177);
+
+    font-weight: bold;
+  }
+  p > a {
+    color: #3d79da;
+  }
+
+  .hr-solid-content {
+    position: relative;
+
+    padding: 1em 0;
+
+    color: #a2a9b6;
+    border: 0;
+
+    font-size: 12px;
+  }
+  .hr-solid-content::before {
+    position: absolute;
+    left: 50%;
+
+    width: fit-content;
+    padding: 0 1ch;
+
+    content: attr(data-content);
+    transform: translateX(-50%);
+    /* for IE浏览器 */
+    white-space: nowrap;
+
+    border: solid #f2f2f2;
+    border-width: 0 99vw;
+
+    line-height: 1px;
+  }
+}

@@ -1,0 +1,25 @@
+.snippet-card {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: fit-content;
+  min-height: 168px;
+
+  border-radius: 4px;
+
+  gap: 10px;
+  &:hover {
+    cursor: pointer;
+  }
+  .cover {
+    position: relative;
+
+    overflow: hidden;
+
+    width: 320px;
+    height: 200px;
+
+    border-radius: 10px;
+  }
+}

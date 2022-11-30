@@ -1,0 +1,44 @@
+import { Post } from 'contentlayer/generated';
+import Link from 'next/link';
+import React, { useMemo } from 'react';
+import AspectDiv from '../aspect_div';
+import MyImage from '../my_image';
+import Tag from '../tag';
+import style from './index.module.scss';
+interface Props {
+  data: Post;
+  mode?: 'small' | 'big';
+}
+function $PostCard(props: Props) {
+  const { data, mode = 'small' } = props;
+
+  const tags = useMemo(() => {
+    if (data.tags) {
+      return data.tags.split('|');
+    }
+    return [];
+  }, [data]);
+
+  return (
+    <Link href={`/post/${data.slug}`}>
+      <div className={style['post-card']}>
+        <AspectDiv width="100%" height="54%">
+          <div className={style['cover']}>
+            <MyImage src={data.cover}></MyImage>
+          </div>
+        </AspectDiv>
+        <div className={style.tags}>
+          {tags.map((tag, index) => {
+            return <Tag text={tag} key={index}></Tag>;
+          })}
+        </div>
+        {mode === 'big' ? <h1>{data.title}</h1> : <h2>{data.title}</h2>}
+        {mode === 'big' ? <div>{data.description}</div> : null}
+      </div>
+    </Link>
+  );
+}
+
+const PostCard = React.memo($PostCard);
+
+export default PostCard;

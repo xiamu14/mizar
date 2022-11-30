@@ -1,0 +1,79 @@
+---
+title: 'Great Select'
+description: '多值枚举类'
+date: 2022-05-04
+cover: 'L7ut-1669768053930.avif'
+---
+
+有一类枚举在多个场景下展示不同的值，比如：后端定义一类服务，包含多种类型，但在前端可能还需要添加类型的名称、描述、状态等。
+
+枚举的每个对应一个复杂的对象数据，而针对这个枚举的操作需要专门的类处理。这个类就是用于处理这种场景下多值枚举的。
+
+```ts
+/**
+ * @desc 多值选择类
+ */
+import _isEqual from 'lodash.isequal';
+
+export default class Select<T extends Record<string, any>> {
+  data: T[];
+
+  /**
+   * 定义具有多值的枚举属性类
+   * @param data
+   */
+  constructor(data: T[]) {
+    this.data = data;
+  }
+
+  /**
+   * 获取数组中此键名的值组成的数组
+   * @param key
+   */
+  values(key: keyof T) {
+    const result = this.data.map((item) => item[key]);
+    return result;
+  }
+
+  /**
+   * 根据特定的 key value 获取到数组子项
+   * @param key
+   * @param val
+   */
+
+  item(key: keyof T, value: T[typeof key]) {
+    const result = this.data.find((item: T) => _isEqual(item[key], value));
+    return result;
+  }
+}
+```
+
+**🐠 使用方式**
+
+```ts
+const fruits = [
+  {
+    id: 0, // 数组 index 显式表达为 id
+    desc: '苹果', // 前端展示的描述值
+    endValue: 1, // 后端值
+  },
+  {
+    id: 1,
+    desc: '橘子',
+    endValue: 2,
+  },
+  {
+    id: 2,
+    desc: '桃花',
+    endValue: 3,
+  },
+];
+const fruitSelect = new Select(fruits);
+
+// 获取所有的 desc ，返回数组
+fruitSelect.values('desc'); // ['苹果', '橘子', '桃花']
+
+// 根据特定的 kev-val 获取子项
+fruitSelect.item('id', 1);
+// {id:1, desc: '橘子', endValue: 2,}
+```

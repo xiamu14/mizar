@@ -1,0 +1,29 @@
+.footer {
+  width: 100%;
+  padding: 48px 0 62px;
+
+  color: rgb(106, 113, 127);
+  border-top: 1px solid #f2f2f2;
+  background-color: #f7f7f7;
+
+  font-size: 12px;
+  .content {
+    display: flex;
+    justify-content: space-around;
+
+    gap: 20px;
+    .column {
+      display: flex;
+      flex-direction: column;
+
+      gap: 12px;
+      .title {
+        margin-bottom: 6px;
+
+        color: #333;
+
+        font-size: 14px;
+      }
+    }
+  }
+}

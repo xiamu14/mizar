@@ -1,0 +1,46 @@
+.commend-container {
+  display: grid;
+
+  padding: 30px 0;
+
+  gap: 40px;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  .post-detail {
+    display: grid;
+
+    grid-column: span 3 / auto;
+    gap: 40px;
+    grid-template-columns: 1fr 1fr 1fr;
+    .post-item-small {
+      display: flex;
+      flex-direction: column;
+      order: 0;
+
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .post-item-big {
+      order: 0;
+
+      grid-column: span 2 / auto;
+    }
+  }
+  .post-outline {
+    position: sticky;
+    top: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 20px;
+  }
+}
+
+.list-container {
+  display: grid;
+
+  padding: 30px 0;
+
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
+}

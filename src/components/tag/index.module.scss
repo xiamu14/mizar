@@ -1,0 +1,26 @@
+.tag {
+  box-sizing: border-box;
+  width: fit-content;
+  height: fit-content;
+  padding: 0px 7px;
+
+  cursor: pointer;
+  transition: all 0.1s cubic-bezier(0.19, 1, 0.22, 1) 0s;
+  text-align: center;
+  white-space: nowrap;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  color: rgb(10, 10, 11);
+  border: 1px solid rgb(234, 234, 235);
+  border-radius: 88px;
+
+  font-size: 12px;
+  font-weight: bold;
+  font-style: normal;
+  line-height: 1.5;
+  &:hover {
+    color: #fff;
+    background-color: rgb(10, 10, 11);
+  }
+}

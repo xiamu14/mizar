@@ -1,0 +1,93 @@
+{
+  // Place your one-word 工作区 snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  "print header": {
+    "scope": "markdown",
+    "prefix": "/header",
+    "body": [
+      "---",
+      "title: $1",
+      "description: $2",
+      "cover: $3",
+      "tags: tag0|tag1",
+      "status: popular|subject|common|recommend",
+      "date: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
+      "---"
+    ],
+    "description": "print header for markdown"
+  },
+  "input image": {
+    "scope": "markdown",
+    "prefix": "/image",
+    "body": ["<Image", "src={`$1`}", "width={}", "height={}", "/>"],
+    "description": "input a image component"
+  },
+  "input link": {
+    "scope": "markdown",
+    "prefix": "/link",
+    "body": ["[$1]($2)"],
+    "description": "input a link component"
+  },
+  "input strong": {
+    "scope": "markdown",
+    "prefix": "/strong",
+    "body": ["**$1**"],
+    "description": "input a strong element"
+  },
+  "input heading1": {
+    "scope": "markdown",
+    "prefix": "/h1",
+    "body": ["# $1"]
+  },
+  "input heading2": {
+    "scope": "markdown",
+    "prefix": "/h2",
+    "body": ["## $1"]
+  },
+  "input heading3": {
+    "scope": "markdown",
+    "prefix": "/h3",
+    "body": ["### $1"]
+  },
+  "input heading4": {
+    "scope": "markdown",
+    "prefix": "/h4",
+    "body": ["#### $1"]
+  },
+  "input heading5": {
+    "scope": "markdown",
+    "prefix": "/h5",
+    "body": ["##### $1"]
+  },
+  "input table": {
+    "scope": "markdown",
+    "prefix": "/table",
+    "body": [
+      "<Table>{`",
+      "|  表头   | 表头  |",
+      "|  ----  | ----  |",
+      "| 单元格  | 单元格 |",
+      "`}</Table>"
+    ]
+  },
+  "input step": {
+    "scope": "markdown",
+    "prefix": "/step",
+    "body": ["<Step number={$1} title=\"\">", "</Step>"]
+  },
+  "input code": {
+    "scope": "markdown",
+    "prefix": "/code",
+    "body": ["```${1}", "```"]
+  },
+  "input divider": {
+    "scope": "markdown",
+    "prefix": "/divider",
+    "body": ["<Divider />"]
+  }
+}

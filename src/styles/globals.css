@@ -1,0 +1,100 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+
+  font-family: 'Nunito', times, 'Heti Song', serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+a {
+  text-decoration: none;
+
+  color: inherit;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    color: white;
+    background: black;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+img {
+  object-fit: cover;
+}
+
+body {
+  --border-color: #e2e8f0;
+
+  --main-font-color: #1a202c;
+  --main-bgd-color: #f7fafc;
+  --selection-bgd-color: #0c344b;
+  --white-color: #fff;
+  --link-color: #3182ce;
+  --code-bgd-color: #f6f8fa;
+  --code-inline-bgd-color: #edf2f7;
+  --list-bullet-color: #a0aec0;
+  --search-highlight-bg-color: #ebf8ff;
+  --tag-media-color: #2d3748;
+  --gradient1-color: #2f3747;
+  --gradient2-color: #0d0f14;
+  --header-btn-color: #4a5568;
+  --code-inner-color: #607ba2;
+  --code-token1-color: #d5408c;
+  --code-token2-color: #805ad5;
+  --code-token3-color: #319795;
+  --code-token4-color: #dd6b21;
+  --code-token5-color: #690;
+  --code-token6-color: #9a6e3a;
+  --code-token7-color: #e90;
+  --code-linenum-color: #cbd5e0;
+  --code-added-color: #47bb78;
+  --code-added-bg-color: #d9f4e6;
+  --code-deleted-color: #e53e3e;
+  --code-deleted-bg-color: #f5e4e7;
+  --code-highlight-color: #a0aec0;
+  --code-highlight-bg-color: #e2e8f0;
+  --code-edit-bg-color: #c3dafe;
+  --code-result-bg-color: #e7edf3;
+  --red-color: #ff4f56;
+  --green-color: #15bd76;
+  --grey-color: #3d556b;
+  --grey-bg-color: #8fa6b2;
+  --dark-color: #0c344b;
+}
+
+.mind-title-box {
+  box-sizing: border-box;
+  width: fit-content;
+  max-width: 120px;
+  padding: 8px 12px;
+
+  word-wrap: break-word;
+  word-break: break-all;
+
+  font-size: 14px;
+  line-height: 1.5;
+}

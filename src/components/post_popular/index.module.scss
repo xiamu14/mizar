@@ -1,0 +1,31 @@
+.post-popular {
+  display: grid;
+
+  height: fit-content;
+  padding: 16px 16px 8px;
+
+  border: 1px solid rgb(255, 240, 184);
+  border-radius: 12px;
+  background: rgb(255, 240, 184);
+  .header {
+    display: flex;
+    align-items: center;
+
+    margin-bottom: 10px;
+
+    gap: 6px;
+  }
+  .item {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+
+    padding: 10px 0px;
+
+    color: rgb(48, 48, 48);
+    border-top: 1px solid rgb(255, 255, 255);
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

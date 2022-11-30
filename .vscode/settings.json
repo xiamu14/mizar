@@ -1,0 +1,7 @@
+{
+  "csscomb.formatOnSave": true,
+  "csscomb.preset": "yandex",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": true
+  }
+}

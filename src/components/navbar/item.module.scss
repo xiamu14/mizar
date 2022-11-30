@@ -1,0 +1,18 @@
+.nav-item {
+  padding: 8px 14px;
+
+  color: rgba(27, 27, 27, 0.6);
+  border-radius: 8px;
+
+  font-weight: 400;
+  &:hover {
+    cursor: pointer;
+
+    background-color: rgb(241, 241, 241);
+  }
+  &-active {
+    color: rgb(27, 27, 27);
+
+    font-weight: bold;
+  }
+}

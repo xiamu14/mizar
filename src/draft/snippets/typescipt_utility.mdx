@@ -1,0 +1,43 @@
+---
+title: 'TypeScript Utility Type'
+description: 'The collection of TypeScript utility type.'
+cover: 'TDys-1669767985595.avif'
+date: 2022-05-04
+---
+
+## 继承函数的参数
+
+```ts
+type AddParameters<
+  TFn extends (...args: never[]) => void,
+  TParams extends [...args: unknow[]]
+> = (...args: [...Parameters<TFn>, ...TParams]) => ReturnType<TFn>;
+```
+
+**🐠 使用方式**
+
+```ts
+type One = (x: number) => void;
+// type Two = (x: number, y:string) => void
+type Two = AddParameters<One, [y: string]>;
+```
+
+## 设置部分属性可选
+
+```ts
+type PartialSome<T, S extends keyof T> = {
+  [K in keyof Omit<T, S>]: T[K];
+} & {
+  [P in S]?: T[P];
+};
+```
+
+**🐠 使用方式**
+
+```ts
+const a = { a: '1', b: '1' };
+
+type Part = PartialSome<typeof a, 'b'>; // = {a:string, b?:string}
+
+const part: Part = { a: '' };
+```

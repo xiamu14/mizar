@@ -1,0 +1,14 @@
+.index {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+  .header {
+    position: sticky;
+    z-index: 100;
+    top: 0;
+  }
+  .content {
+    flex-grow: 1;
+  }
+}
