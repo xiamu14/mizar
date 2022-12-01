@@ -12,7 +12,7 @@ function $Snippets() {
       <ContentSpace>
         <ViewHeader
           title="只言片语"
-          desc="这里记录的灵感一闪，正渐渐汇聚成思想之海。"
+          desc="这里记录的灵光一闪，正渐渐汇聚成思想之海。"
         ></ViewHeader>
         <Divider />
         <div className={style['list-container']}>

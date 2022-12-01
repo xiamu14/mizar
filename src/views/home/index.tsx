@@ -15,11 +15,6 @@ function $Home() {
         .sort((a, b) => Number(new Date(b.date)) - Number(new Date(a.date))),
     []
   );
-  console.log(
-    '%c debug',
-    'background: #69c0ff; color: white; padding: 4px',
-    posts
-  );
 
   const recommendPost = useMemo(() => {
     const list = posts.filter((it) => it.status === 'recommend');
