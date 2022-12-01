@@ -15,6 +15,22 @@ function $Home() {
         .sort((a, b) => Number(new Date(b.date)) - Number(new Date(a.date))),
     []
   );
+  console.log(
+    '%c debug',
+    'background: #69c0ff; color: white; padding: 4px',
+    posts
+  );
+
+  const recommendPost = useMemo(() => {
+    const list = posts.filter((it) => it.status === 'recommend');
+    return list[0];
+  }, [posts]);
+
+  const subjectPost = useMemo(() => {
+    const list = posts.filter((it) => it.status === 'subject');
+    return list;
+  }, [posts]);
+
   return (
     <div>
       <ContentSpace>
@@ -30,11 +46,11 @@ function $Home() {
         <div className={style['commend-container']}>
           <div className={style['post-detail']}>
             <div className={style['post-item-small']}>
-              <PostCard data={posts[0]} />
-              <PostCard data={posts[0]} />
+              <PostCard data={subjectPost[0]} />
+              <PostCard data={subjectPost[1]} />
             </div>
             <div className={style['post-item-big']}>
-              <PostCard mode="big" data={posts[0]} />
+              <PostCard mode="big" data={recommendPost} />
             </div>
           </div>
           <div className={style['post-outline']}>
