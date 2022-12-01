@@ -6,7 +6,8 @@
 
   border: 1px solid transparent;
   .pre-container {
-    border: 1px solid #d6dde4;
+    border: 1px solid var(--code-bgd-color);
+    border-radius: 8px;
     background: var(--code-bgd-color) !important;
   }
   .btn-copy {

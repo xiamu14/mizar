@@ -1,0 +1,128 @@
+---
+title: 使用 JS 转换数据的最佳实践
+description: d-pipe 介绍，使用 JS 对数据进行转换的最佳实践
+cover: B3JH-1669864445067.png?w=1920&h=960
+tags: typescript|d-pipe|convert
+status: subject
+date: 2022-12-01
+---
+
+在开发中，不同输入输出所存储和使用数据总会存在差异，或是数据类型、字段经常出现偏差。
+
+当前后端分离开发时，服务端返回的数据与前端渲染时所定义的数据，即使是相同的业务逻辑，也会存在差异。又或者使用多个开源组件时，相互间需要传递的数据类型定义也会有差异。
+
+但是，在相同的业务场景，这种数据的差异又仅仅是表象的差异，比如：字段键名不同，值的数据类型不同。
+
+通过开发经验归纳，有下面三种差异：
+
+1. key 名称不一致
+2. value 类型不一致
+3. 数据结构不一致：输入是 `{a,b,c}`，输出是 `{a,b}` 或 `{a,b,c,d}`
+
+当然，实际开发中还存在着更复杂的差异，那样的情状建议特例化处理。
+
+而造成这种情况的原因通常是开发协作时沟通不够详尽，或是开源组件缺乏统一的规范。为了简化处理这种情况的流程，更合适的实践方案是在前端通过数据转换函数进行归一化处理。
+
+针对上述数据差异，我开源了数据转换库 [d-pipe](https://github.com/xiamu14/d-pipe)。
+
+## 使用
+
+```js
+import Pipe from 'd-pipe';
+
+const data = { a: 'a', b: 'b' };
+const pipe = new Pipe(data);
+pipe
+  .add('c', () => 'c')
+  .delete(['b'])
+  .editValue('a', () => 'aa');
+pipe.data; // { a: 'aa', c: 'c' }
+```
+
+在 `Pipe` 实例化导入数据 `data`，再通过可链式调用的转换方法 `add`，`delete` 等对数据进行转换。
+
+> Tips：传入的数据必须是非空对象和非空数组，{} 和 [] 都是不允许的数据。开发者必须在业务中明确判断数据是非空的，才能传递给 Pipe。
+>
+> 否则 Pipe 将抛出一个类型错误： The dataSet must be an Object or Array,and cannot be an empty object or empty array.
+
+关于所有转换方法的介绍和使用请查看 [README](https://github.com/xiamu14/d-pipe#%E6%96%B9%E6%B3%95)。
+
+## 特征
+
+1. immutable：内部使用 cloneDeep 函数，对传入的数据进行深拷贝，所有修改不影响原始数据
+   ```js
+   constructor(data: any) {
+   this.originalData = deepClone(data);
+   this.result = deepClone(data);
+   }
+   ```
+2. 方法调用顺序无关：使用链式调用方法时无需关心代码书写顺序，内部始终使用固定的执行顺序（具体顺序查看 [README](https://github.com/xiamu14/d-pipe#%E6%96%B9%E6%B3%95)）。
+
+   ```js
+   // 测试用例
+   test('valueDelivery', () => {
+     const data = { a: 'a', b: 'b' };
+     const pipe = new Pipe(data);
+     pipe
+       .add('c', () => 'c')
+       .delete(['b'])
+       .editValue('a', () => 'aa');
+     expect(pipe.data).toEqual({ a: 'aa', c: 'c' }); // pass
+     // 顺序无关
+     pipe
+       .editValue('a', () => 'aa')
+       .add('c', () => 'c')
+       .delete(['b']);
+     expect(pipe.data).toEqual({ a: 'aa', c: 'c' }); // pass
+   });
+   ```
+
+3. 归纳操作：Pipe 内部会收集所有调用方法，以便于对数组数据只使用一次遍历完成数据操作
+
+   ```js
+   // 源码：src/core/pipe.ts
+   private convert() {
+   // NOTE: 判断是否是数组
+   if (Array.isArray(this.originalData)) {
+     this.result = this.originalData.map((item, index) => {
+       // NOTE: 当是最后一条数据时，使用 forEachOnce ，来清除记录，从而不重复计算
+       const type =
+         index === (this.originalData as T[]).length - 1
+           ? 'forEachOnce'
+           : 'forEachAlways';
+       return this.convertItem(item, type);
+     });
+   } else {
+     this.result = this.convertItem(this.originalData, 'forEachOnce');
+   }
+   if (this.noExitKeys.size > 0) {
+     console.warn(
+       `[warn]:Fields of ${[...this.noExitKeys].join(',')} do not exist.`,
+     );
+   }
+   }
+   ```
+
+4. 链式调用：使用链式调用方法，使代码更有组织性，阅读性更佳，更便于维护。
+
+5. 类型描述：`d-pipe` 完全使用 typescript 编写，具有完备的类型描述。
+
+## 示例
+
+- 提交表单时删除空数据：`null`, `undefined`, `''`
+
+  ```js
+  const data = { price: 100, discount: undefined };
+  const pipe = new Pipe(data);
+  pipe.clean([undefined, null, '']);
+  console.log(pipe.data); // {price:100}
+  ```
+
+- 渲染数据时保留不同字段
+
+  ```js
+  const data = { name: 'Jane', vip: '100', gender: 'male' };
+  const pipe = new Pipe(data);
+  pipe.pick(['name', 'gender']);
+  console.log(pipe.data); // {name:"Jane",gender:"male"}
+  ```

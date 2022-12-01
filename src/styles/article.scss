@@ -17,6 +17,10 @@
     margin-bottom: 10px;
   }
 
+  li > p {
+    margin-bottom: 10px;
+  }
+
   h2,
   h3,
   h4 {
@@ -35,10 +39,12 @@
   }
   blockquote {
     position: relative;
+    left: 2.5%;
 
+    width: 95%;
     padding: 6px 10px;
 
-    border-radius: 2px;
+    border-radius: 8px;
     background-color: #f2f6fa;
 
     margin-inline-start: 0px;
@@ -68,7 +74,8 @@
       }
     }
   }
-  p > code {
+  p > code,
+  li > code {
     padding: 4px;
 
     color: #333;
@@ -76,6 +83,9 @@
     background-color: rgb(255, 220, 177);
 
     font-weight: bold;
+  }
+  ol li::marker {
+    color: #3d79da;
   }
   p > a {
     color: #3d79da;

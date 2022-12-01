@@ -121,7 +121,7 @@ function fileUpdate(imgPath, obj) {
       fs.writeFile(tinyImgPath, body, 'binary', (err) => {
         if (err) return console.error(err);
         console.log(
-          `图片：/images/paper/${filename} \n原图：${path.basename(
+          `图片：${filename} \n原图：${path.basename(
             imgPath
           )}\n原始大小:${formatBytes(obj.input.size)}，压缩大小:${formatBytes(
             obj.output.size
