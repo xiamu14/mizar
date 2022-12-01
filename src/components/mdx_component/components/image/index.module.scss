@@ -1,9 +1,11 @@
 .img-wrapper {
   display: flex;
+  overflow: hidden;
   align-items: center;
   justify-content: center;
 
-  width: 95%;
   margin: 0 auto;
   padding: 4px;
+
+  border-radius: 8px;
 }
