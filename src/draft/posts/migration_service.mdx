@@ -1,0 +1,83 @@
+---
+title: 迁移 Quarter 云服务实践
+date: 2022-11-06
+status: common
+cover: VvcG-1670243699083.png?w=1844&h=968
+description: 为了降低成本，需要时常做迁移
+---
+
+## 腾讯云轻量服务镜像
+
+在腾讯云控制台的旧服务上选择“制作镜像”。
+
+![腾讯云](jwC8-1667692020009.png?w=3410&h=766&border=true)
+
+然后在新服务器上选择“重装系统”，并使用制作的镜像。这样就快速完成服新服务器的环境设置和恢复部分数据了。
+
+接下来在新服务器上绑定 Key 密钥，方便远程登录操作。
+
+### 检查新服务器环境
+
+- git version
+- node version
+  - pnpm version
+  - pm2 version
+- docker version
+
+### 修改域名 DNS 解析
+
+在域名 DNS 解析页面修改 IP（新服务器的公网 IP）
+
+### 修改防火墙安全端口
+
+参照旧服务器防火墙设置，修改新服务器的即可
+
+### 启动客户端
+
+Caddy docker 实例在复制镜像时会自动启动，只要检查域名 DNS 解析已生效，那基本就实现了。
+
+### 启动服务端
+
+1. 修改配置里的内网 IP（因为 docker 绑定使用的是内网 IP），包括 caddy 配置文件里的反向代理设置和数据库环境变量里的链接地址
+2. 设置数据库环境变量，prisma 生产环境使用环境变量的数据库链接地址
+3. 启动数据库的 docker 实例
+
+### 迁移数据
+
+目前使用的方案（不太好，要使用更自动更安全的方式）
+
+1. docker 进入容器内部：
+
+   ```bash
+   [root@ubuntu]# docker exec -u root -it [容器 id] /bin/bash
+   ```
+
+2. 备份数据库：
+
+   ```bash
+   root@xxx:/# pg_dump -h localhost -p 5432 -U 用户名 数据库名 > /home/postgres.sql
+   ```
+
+   - -h, --host 主机名
+   - -p，--port 端口号
+   - -U，--username 以指定的数据库用户连接
+
+3. 拷贝到宿主机
+
+   最后将备份文件上传到新服务器，再将备份数据拷贝到数据库实例里。
+
+   ```bash
+   [root@ubuntu home]# docker cp [容器 id]:/postgres.sql /home
+   ```
+
+   > 说明： docker cp 容器 id:[容器目录] [宿主机文件路径]
+
+4. 导入数据
+
+   执行下面的 sql 语句
+
+   ```bash
+   root@xxx:/# psql -U [用户名] -d [数据库库名] -f /home/postgres.sql
+   ```
+
+   注意：导入同步时，数据库版本最好一致。

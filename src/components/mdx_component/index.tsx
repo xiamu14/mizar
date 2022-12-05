@@ -71,7 +71,7 @@ const Pre = ({ children, ...otherProps }: PropsWithChildren<any>) => {
 const mdxComponent = {
   hr: Divider,
   pre: Pre,
-  Image,
+  img: Image,
   Table,
 };
 
