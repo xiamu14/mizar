@@ -59,7 +59,7 @@ export default function Article() {
             </div>
             <Divider />
             <div className="article">
-              <Component components={mdxComponent} />
+              <Component components={mdxComponent as any} />
             </div>
           </div>
           {/* <div className={style.aside}>
