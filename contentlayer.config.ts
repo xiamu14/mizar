@@ -38,7 +38,7 @@ const Post = defineDocumentType(() => ({
     },
     status: {
       type: 'string',
-      description: 'draft|popular|subject|common', // 草稿|受欢迎|主题|一般
+      description: 'draft|popular|subject|common|recommend', // 草稿|受欢迎|主题|一般
       required: true,
     },
     tags: {

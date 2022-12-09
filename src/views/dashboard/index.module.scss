@@ -1,0 +1,11 @@
+.dashboard {
+  padding: 20px 0;
+}
+.list-container {
+  display: grid;
+
+  padding: 30px 0;
+
+  grid-template-columns: repeat(4, 1fr);
+  gap: 80px;
+}

@@ -1,4 +1,5 @@
 import Article from '../views/article';
+import Dashboard from '../views/dashboard';
 import Home from '../views/home';
 import { MapView } from '../views/map';
 import Maps from '../views/maps';
@@ -17,6 +18,10 @@ export const routes = [
   {
     pattern: '/maps',
     element: <Maps />,
+  },
+  {
+    pattern: '/dashboard',
+    element: <Dashboard />,
   },
   {
     pattern: '/map/:id',

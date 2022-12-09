@@ -32,7 +32,11 @@ function $PostCard(props: Props) {
             return <Tag text={tag} key={index}></Tag>;
           })}
         </div>
-        {mode === 'big' ? <h1>{data.title}</h1> : <h2>{data.title}</h2>}
+        {mode === 'big' ? (
+          <h1 className={style['title-b']}>{data.title}</h1>
+        ) : (
+          <h2 className={style['title-s']}>{data.title}</h2>
+        )}
         {mode === 'big' ? <div>{data.description}</div> : null}
       </div>
     </Link>
