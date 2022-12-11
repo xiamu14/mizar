@@ -41,8 +41,9 @@ function $Home() {
         <div className={style['commend-container']}>
           <div className={style['post-detail']}>
             <div className={style['post-item-small']}>
-              <PostCard data={subjectPost[0]} />
-              <PostCard data={subjectPost[1]} />
+              {subjectPost.map((item, index) => {
+                return <PostCard key={index} data={item} />;
+              })}
             </div>
             <div className={style['post-item-big']}>
               <PostCard mode="big" data={recommendPost} />

@@ -1,0 +1,109 @@
+---
+title: Flutter Widgets
+description: 收集使用 Flutter 中有用的 widgets。
+cover: gJI8-1670720409782.avif?w=2070&h=1380
+tags: flutter|widget
+status: popular
+date: 2022-12-11
+---
+
+## Wrap - 自动换行组件
+
+让子组件在容器空间不足时自动换行展示
+
+## Opacity and AnimatedOpacity - 透明组件
+
+Opacity 可以控制子组件的透明度，透明度为 0 时，组件的位置会保留，组件并未被移除。
+
+AnimatedOpacity 可以轻松的实现透明度动画。
+
+```dart
+class LogoFade extends StatefulWidget {
+  const LogoFade({Key? key}) : super(key: key);
+
+  @override
+  State<LogoFade> createState() => LogoFadeState();
+}
+
+class LogoFadeState extends State<LogoFade> {
+  double opacityLevel = 1.0;
+
+  void _changeOpacity() {
+    setState(() => opacityLevel = opacityLevel == 0 ? 1.0 : 0.0);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        AnimatedOpacity(
+          opacity: opacityLevel,
+          duration: const Duration(seconds: 3),
+          child: const FlutterLogo(),
+        ),
+        ElevatedButton(
+          onPressed: _changeOpacity,
+          child: const Text('Fade Logo'),
+        ),
+      ],
+    );
+  }
+}
+```
+
+## FadeTransition - 淡入淡出组件
+
+## PageView - 页面间滑动组件
+
+可实现轮播组件
+
+## SingleChildScrollView - 滚动组件
+
+让子组件滚动
+
+## InheritedWidget - 状态\数据跨组件传递
+
+详细内容参考这里[7.2.1 InheritedWidget](https://book.flutterchina.club/chapter7/inherited_widget.html#_7-2-2-%E6%B7%B1%E5%85%A5%E4%BA%86%E8%A7%A3inheritedwidget)
+
+## ClipRRect - 裁剪组件
+
+## Hero - 过渡组件
+
+## FittedBox - 让子组件适配
+
+## BackdropFilter & ImageFilter - 过滤器组件
+
+可以实现磨砂玻璃效果，可以对图片进行过滤效果。
+
+## Align - 控制 Text 组件布局
+
+## Dismissible - 提供左滑删除功能的组件
+
+## LayoutBuilder - 查看当前组件约束
+
+```dart
+LayoutBuilder(
+  builder: (context, constraints) {
+    print('${constrains.maxWidth}')
+  }
+)
+
+```
+
+## AbsorbPointer - 禁止组件滚动，点击等输入事件
+
+## ValueListenableBuilder - 数据变动监听组件
+
+## AnimatedList - 使列表增加动画
+
+## AspectRatio - 控制子组件的长宽比
+
+```dart
+AspectRatio(
+  aspectRatio: 3/2,
+  child: MyWidget(),
+)
+```
+
+## LimitedBox - 仅当没有父级约束时，为组件提供默认大小

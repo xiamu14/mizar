@@ -13,7 +13,7 @@ function $PostCard(props: Props) {
   const { data, mode = 'small' } = props;
 
   const tags = useMemo(() => {
-    if (data.tags) {
+    if (data?.tags) {
       return data.tags.split('|');
     }
     return [];

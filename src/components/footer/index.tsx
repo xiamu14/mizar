@@ -13,14 +13,16 @@ function $Footer() {
             <Link href="/maps">目录</Link>
           </div>
           <div className={style.column}>
-            <h4 className={style.title}>认识我</h4>
-            <Link href="/maps">Github</Link>
-            <Link href="/maps">Twitter</Link>
+            <h4 className={style.title}>关于我</h4>
+            <Link href="https://github.com/xiamu14">Github</Link>
+            <Link href="https://twitter.com/BenjarminX">Twitter</Link>
           </div>
           <div className={style.column}>
-            <h4 className={style.title}>有趣站点</h4>
-            <Link href="/maps">Github</Link>
-            <Link href="/maps">Twitter</Link>
+            <h4 className={style.title}>我的开源</h4>
+            <Link href="https://sceneui.vercel.app/">SceneUI</Link>
+            <Link href="https://star-board-delta.vercel.app/xiamu14">
+              Star Board
+            </Link>
           </div>
         </div>
       </ContentWidth>

@@ -12,13 +12,22 @@
   > div {
     margin-bottom: 20px;
   }
-  > ul li,
-  > ol li {
+  ul li,
+  ol li {
     margin-bottom: 20px;
   }
 
   li > p {
     margin-bottom: 10px;
+
+    font-size: 16px;
+  }
+
+  li ul li,
+  li ol li {
+    margin: 5px 0;
+
+    font-size: 14px;
   }
 
   h2,
@@ -45,6 +54,8 @@
     padding: 8px 10px;
 
     border-radius: 8px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     background-color: #f2f6fa;
 
     margin-inline-start: 0px;

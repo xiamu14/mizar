@@ -14,8 +14,8 @@
       "title: $1",
       "description: $2",
       "cover: $3",
-      "tags: tag0|tag1",
-      "status: draft|popular|subject|common|recommend",
+      "tags: tag0|tag1(fot post)",
+      "status: draft|popular|subject|common|recommend(for post)",
       "date: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE",
       "---"
     ],
@@ -24,14 +24,14 @@
   "input image": {
     "scope": "markdown",
     "prefix": "/image",
-    "body": ["<Image", "src={`$1`}", "width={}", "height={}", "/>"],
-    "description": "input a image component"
+    "body": ["![$1]($2)?w=&h="],
+    "description": "input a image element"
   },
   "input link": {
     "scope": "markdown",
     "prefix": "/link",
     "body": ["[$1]($2)"],
-    "description": "input a link component"
+    "description": "input a link element"
   },
   "input strong": {
     "scope": "markdown",

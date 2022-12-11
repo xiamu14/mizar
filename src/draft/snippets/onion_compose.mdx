@@ -1,0 +1,25 @@
+---
+title: 洋葱模型
+description: JS 中的洋葱模型简易实现
+cover: nTfO-1670635577150.avif?w=2071&h=1381
+date: 2022-12-10
+---
+
+洋葱模型是一种很经典的程序设计思路。
+
+```js
+type MiddleFunction = (next: (args?: any) => void) => void;
+
+export function compose(middleware: MiddleFunction[]) {
+  return async () => {
+    await dispatch(0);
+    async function dispatch(index: number) {
+      if (index === middleware.length) return null;
+      const fn = middleware[index];
+      await fn(function next() {
+        dispatch(index + 1);
+      });
+    }
+  };
+}
+```

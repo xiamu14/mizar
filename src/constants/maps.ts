@@ -7,4 +7,11 @@ export const maps: MapItem[] = [
     tags: ['type', 'javascript'],
     cover: 'L7ut-1669768053930.avif',
   },
+  {
+    name: 'flutter',
+    description:
+      'Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase.',
+    tags: ['flutter'],
+    cover: 'FNZX-1670720871348.webp',
+  },
 ];

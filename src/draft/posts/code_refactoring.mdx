@@ -1,0 +1,65 @@
+---
+title: 代码重构指南
+description: 对已有项目代码进行格式化和规范的重构指南
+cover: z7lq-1670719153385.avif?w=2070&h=1380
+tags: refactor
+status: common
+date: 2022-12-11
+---
+
+## 循序渐进改进
+
+接手已有项目的代码以后，面对代码质量不佳的情况，应该适时重构。因为已有项目大概率是处在运行中，那么重构就必须采用循序渐进的方式，从破坏最小的改进开始，然后配合完备的测试用例不断增加重构的范围，直至达到当前最佳。
+
+## 代码格式化
+
+使用 **Prettier** 和 **EditorConfig** 工具对代码进行格式化。因为格式化只涉及换行，空格，空行，尾部换行符等不影响代码逻辑和运行的修改，所以可以在重构的第一阶段就果断执行。
+时机则一般是在发版周期结束，次版本开始之前，同步团队成员的代码分支。
+统一格式化的意义是指：开发者在不同的系统环境，不同的编辑器或 IDE 之间保持一致的代码风格。
+
+### EditorConfig 配置
+
+EditorConfig 可以帮助开发者在不同的编辑器和 IDE 之间定义和维护一致的代码风格。
+
+- `indent_style`：tab 为 hard-tabs，space 为 soft-tabs。
+- `indent_size`：设置整数表示规定每级缩进的列数和 - soft-tabs 的宽度（译注：空格数）。如果设定为 tab，则会使用 tab_width 的值（如果已指定）。
+- `tab_width`：设置整数用于指定替代 tab 的列数。默认值就是 indent_size 的值，一般无需指定。
+- `end_of_line`：定义换行符，支持 lf、cr 和 crlf。
+- `charset`：编码格式，支持 latin1、utf-8、utf-8-bom、utf-16be 和 utf-16le，不建议使用 uft-8-bom。
+- `trim_trailing_whitespace`：设为 true 表示会除去换行行首的任意空白字符，false 反之。
+- `insert_final_newline`：设为 true 表明使文件以一个空白行结尾，false 反之。
+- `root`：表明是最顶层的配置文件，发现设为 true 时，才会停止查找.editorconfig 文件。
+
+详细配置查看 [wiki](https://github.com/editorconfig/editorconfig/wiki/EditorConfig-Properties)
+
+### Prettier 配置说明
+
+`Prettier` 是一个非可选的代码格式化工具，支持大量的编程语言，自定义配置需求极少，只提供部分争议性的格式化选项。
+
+[options](https://www.prettier.cn/docs/options.html)
+
+## 代码规范
+
+根据 eslint 的指导使用更合理的方式重写代码，但可能造成大量的重构，需要谨慎选择规范。
+eslint 是可选的规范校验和修复工具，提供了大量可选项，以便开发者可以根据项目实际情况设置合理的规范。
+
+> tips: 建议和 Prettier 配合使用时，关闭 eslint 中和格式有关的选项。（参考）
+>
+> 你可以使用 `eslint-config-prettier` 禁用所有与格式有关的 eslint 规则
+
+## 测试用例
+
+补充测试用例
+
+## 补充文档
+
+活文档
+
+## 重写代码
+
+- 保持函数的单一职责
+- 业务逻辑是否清晰，无副作用
+- 变量定义以及引用是否可追溯
+- 避免复杂条件、大函数
+  - 滥用开关参数容易导致大函数
+  - 使用纯函数

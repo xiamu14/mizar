@@ -7,5 +7,6 @@
   padding: 30px 0;
 
   grid-template-columns: repeat(4, 1fr);
-  gap: 80px;
+  column-gap: 80px;
+  row-gap: 60px;
 }
