@@ -1,0 +1,81 @@
+---
+title: Eslint config
+description: What is the difference between extends and plugins in ESLint config
+cover: gIG_-1672793835174.jpeg?w=1400&h=1050
+tags: eslint|plugin|extends
+status: common
+date: 2023-01-04
+---
+
+我经常对 `eslint-plugin-xxx` 和 `eslint-config-xxx` 之间的差异感到困惑，何时在 ESLint config 文件中添加 `plugins`，何时在 ESLint config 文件中修改 `extends`？
+
+## ESLint 是什么？
+
+如果你正在搜索“eslint-plugin vs eslint-config 差异”这类问题，那么你应该已经知道 ESLint 是什么了。但为了阅读接下来的内容，还是快速了解下 ESLint。
+
+ESLint 是开源的 Javascript 校验工具，它的作用是静态分析并修复 Javascript 代码中可能有问题或不符合规范指南的代码。开发者可以通过项目根目录中的配置文件 `.eslintrc.{js,yml,json}` 选择要执行的规则。
+
+ESLint 除了拥有很多内置规则外，还允许开发者自己创建 linting 规则，并且这些规则完全是插件化的。
+
+## Plugins
+
+尽管 ESLint 内置了很多规则集，但它们不能满足所有项目的需求，尤其是在项目里使用 React，Vue 等库时。ESLint 插件能让开发者根据项目的需求添加自定义的规则。
+ESLint 插件通常作为 npm 模块发布，命名格式为 `eslint-plugin-<plugin-name>
+`
+通过 npm 安装插件后，然后将插件添加到 `eslintrc` 配置文件的 plugins 配置项。例如，使用 `eslint-plugin-my-awesome-plugin` 插件，可以如下面 `.eslintrc`文件里的代码：
+
+```json
+// .eslintrc
+{
+  "plugins": ["my-awesome-plugin"] // The "eslint-plugin" suffix
+}
+```
+
+插件的所有规则不用自动应用，还需要单独设置插件里每条规则，代码如下：
+
+```json
+// .eslintrc
+{
+  "rules": {
+    "curly": "error"
+  }
+}
+```
+
+但是配置要使用的每条规则是很麻烦的，如果可以使用插件所有者或正在使用的框架推荐的规则集，就会更容易使用 ESLint。这就是 `eslint-config-xxx` 的作用。
+
+## Shareable configs
+
+我们为项目创建的 ESLint 配置是我们项目的重要组成部分，而且我们经常有多个项目会需要相同的配置。因此，ESLint 支持开发者通过将配置发布到 npm 来共享配置。与插件类似，共享的配置以 `eslint-config-<config-name>` 格式名称发布。
+在 ESLint 中使用共享配置的代码如下：
+
+```json
+// .eslintrc
+{
+  "extends": ["awesome"] // The 'eslint-config' suffix
+}
+```
+
+我们可以将多个配置添加到数组中来扩展它们，如果配置修改了相同的规则，那么前面配置的规则将被后续配置覆盖，因此，添加顺序是很重要的。
+需要注意的是，共享配置并不仅包含共享规则集，它们还可以带有自己的插件、格式化程序等的完整配置，甚至可以从其他配置扩展。
+
+你可能已经在你的项目中扩展了一些流行的配置，比如 `eslint-config-airbnb`，它包括 `eslint-plugin-react` 、 `eslint-plugin-import` 等插件。
+
+## Plugins with configs
+
+我们已经看到了插件如何允许您添加更多规则来检查您的项目，以及您需要如何添加要在配置中使用的规则或从其他具有规则的可共享配置扩展。同样，插件可以附带一系列的规则集，方便使用。
+
+您可以通过 `plugin:` 前缀使用插件附带的这些配置。例如，假设您正在使用一个名为 `eslint-plugin-my-awesome-plugin` 的插件，它带有一个名为 `recommended-config` 的配置。然后，您可以将 `plugin:my-awesome-plugin/recommended-config` 添加到配置中的 `extends` 键，以从该可共享配置进行扩展。
+
+我们也以 `eslint-plugin-react` 为例。如果你在它的代码中看到 `configs` 键，你会发现它有三个可用的配置 `recommended` ， `all` 和 `jsx-runtime` 。
+
+现在假设我只想使用这个插件的推荐配置，它强制执行为 React 良好实践推荐的规则，这就是我需要添加到我项目的 ESLint 配置中的所有代码：
+
+```json
+// .eslintrc
+{
+  "extends": ["plugin:react/recommend"]
+}
+```
+
+请注意，您甚至不需要在其中添加带有 eslint-plugin-react 的插件密钥，因为它已经包含在推荐的配置中。

@@ -4,6 +4,7 @@
   color: #333;
 
   font-size: 18px;
+  line-height: 1.5;
   > pre,
   > image,
   > ul,
@@ -87,11 +88,11 @@
   }
   p > code,
   li > code {
-    padding: 4px;
+    padding: 1.5px 4px;
 
-    color: #214da6;
+    color: #326bdf;
     border-radius: 4px;
-    background-color: #b0ceff;
+    background-color: #c5dafb;
   }
   ol li::marker {
     color: #3d79da;

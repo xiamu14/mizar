@@ -89,5 +89,10 @@
     "scope": "markdown",
     "prefix": "/divider",
     "body": ["<Divider />"]
+  },
+  "input 1": {
+    "scope": "markdown",
+    "prefix": "/img",
+    "body": ["<img src='' alt=''/>"]
   }
 }
