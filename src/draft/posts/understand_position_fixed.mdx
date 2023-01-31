@@ -1,0 +1,42 @@
+---
+title: 不受控的 position:fixed
+description: position:fixed 不根据视口定位
+cover: 7Jzp-1675131277590.jpg?w=800&h=450
+tags: css|position|fixed
+status: common
+date: 2023-01-31
+---
+
+## 不受控制的 position:fixed
+
+`position:fixed` 在布局页面中非常常用。它的作用是：`position:fixed` 的元素将相对于屏幕视口（viewport）的位置来指定其位置。并且元素的位置在屏幕滚动时不会改变。但是，在一些特定的场合，指定了 `position:fixed` 的元素却没有相对于屏幕视口进行定位，而是相对于其祖父元素，表现如同 `position:absolute`。
+
+### 无效的情况
+
+在 MDN 文档中，概括了 `position:absolute` 无效的情况。
+
+> 当元素祖先的 transform 属性非 none 时，定位容器由视口改为该祖先。
+
+通俗的讲就是指定了 `position:fixed` 的元素，如果其祖先元素存在非 none 的 transform 值 ，那么该元素将相对于设定了 transform 的祖先元素进行定位。
+
+### 为何有这种情况
+
+这个问题，就牵涉到 `Stacking Context`，也就是堆叠上下文的概念了。要解释这种情况要分为两步:
+
+1. 任何非 none 的 transform 值都会导致一个堆叠上下文（Stacking Context）和包含块（Containing Block）的创建。
+2. 由于堆叠上下文的创建，该元素会影响其子元素的固定定位。设置了 `position:fixed` 的子元素将不会基于 viewport 定位，而是基于这个父元素。
+
+### 哪些属性会导致失效
+
+在最新的 Blink 内核下，发现并不是所有能够生成层叠上下文的元素都会使得 `position:fixed` 失效，但也不止 transform 会使 `position:fixed` 失效。
+下述 7 种方式目前都会使得 position:fixed 定位的基准元素改变（本文重点）：
+
+1. `transform` 属性值不为 none 的元素
+2. 设置了 `transform-style: preserve-3d` 的元素
+3. `perspective` 值不为 none 的元素
+4. 在 `will-change` 中指定了任意 CSS 属性
+5. 设置了 `contain: paint`
+6. `filter` 值不为 none 的元素
+7. `backdrop-filter` 值不为 none 的元素
+
+同时，不同内核的浏览器还存在差异，要具体问题具体分析。
