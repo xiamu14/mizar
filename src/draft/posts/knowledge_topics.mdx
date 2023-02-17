@@ -1,0 +1,432 @@
+---
+title: 前端知识与考题
+description: 整理前端的知识与涉及到的面试考题
+cover: lcam-1675770615972.webp?w=1000&h=420
+tags: html|css|js|react
+status: common
+date: 2023-02-07
+---
+
+## HTML
+
+### script 标签中 defer 和 async 的区别
+
+如果没有 defer 或 async 属性，浏览器会立即加载并执行相应的脚本。它不会等待后续加载的文档元素，读取到就会开始加载和执行，这样就阻塞了后续文档的加载。
+
+`defer` 和 `async` 属性都是去异步加载外部的 JS 脚本文件，它们都不会阻塞页面的解析，其区别如下：
+
+- `执行顺序：` 多个带 async 属性的标签，不能保证加载的顺序；多个带 defer 属性的标签，按照加载顺序执行；
+- `脚本是否并行执行：`async 属性，表示后续文档的加载和执行与 js 脚本的加载和执行是并行进行的，即异步执行；defer 属性，加载后续文档的过程和 js 脚本的加载(此时仅加载不执行)是并行进行的(异步)，js 脚本需要等到文档所有元素解析完成之后才执行，`DOMContentLoaded` 事件触发执行之前。
+
+### 关于 requestAnimationFrame
+
+## CSS
+
+### 盒模型
+
+CSS3 中的盒模型有以下两种：标准盒子模型、IE 盒子模型。
+盒模型都是由四个部分组成的，分别是 margin、border、padding 和 content。
+
+标准盒模型和 IE 盒模型的区别在于设置 width 和 height 时，所对应的范围不同：
+
+- 标准盒模型的 width 和 height 属性的范围只包含了 content，
+- IE 盒模型的 width 和 height 属性的范围包含了 border、padding 和 content。
+
+可以通过修改元素的 box-sizing 属性来改变元素的盒模型：
+
+- box-sizing: content-box 表示标准盒模型（默认值）
+- box-sizing: border-box 表示 IE 盒模型（怪异盒模型）
+
+### CSS 优化和提升性能的方式？
+
+#### 加载性能
+
+1. 压缩和复用 css 以减少文件体积
+2. 减少使用 @import, 使用 link。
+
+#### 选择器性能
+
+1. 关键选择器（key selector）。选择器的最后面的部分为关键选择器（即用来匹配目标元素的部分）。CSS 选择符是从右到左进行匹配的。当使用后代选择器的时候，浏览器会遍历所有子元素来确定是否是指定的元素等等；
+2. 如果规则拥有 ID 选择器作为其关键选择器，则不要为规则增加标签。过滤掉无关的规则（这样样式系统就不会浪费时间去匹配它们了）。
+3. 避免使用通配规则，如`*{}`计算次数惊人，只对需要用到的元素进行选择。
+4. 尽量少的去对标签进行选择，而是用 class。
+5. 尽量少的去使用后代选择器，降低选择器的权重值。后代选择器的开销是最高的，尽量将选择器的深度降到最低，最高不要超过三层，更多的使用类来关联每一个标签元素。
+6. 使用继承属性，可以避免对这些属性重复指定规则。
+
+#### 渲染性能
+
+1. 慎重使用高性能属性：浮动、定位。
+2. 尽量减少页面重排、重绘。
+3. 标准化各种浏览器前缀：带浏览器前缀的在前。标准属性在后。
+
+### 关于 CSS 工程化
+
+CSS 工程化是为了解决以下问题:
+
+1. 宏观设计： CSS 代码如何组织、如何拆分、模块结构如何设计
+2. 构建：打包结果最优
+3. 可维护性：确保可以被新人轻松接手
+
+### BFC
+
+[关于 CSS-BFC 深入理解](https://juejin.cn/post/6844903476774830094)
+
+### Flex
+
+`FlexBox` 布局也叫 `Flex` 布局，弹性盒子布局。它的目标是提供一个更有效地布局、对齐方式，并且能够使父元素在子元素的大小未知或动态变化情况下仍然能够分配好子元素之间的间隙。主要思想是使父元素能够调整子元素的宽度、高度、排列方式，从而更好的适应可用的布局空间。设定为 flex 布局的元素能够放大子元素使之尽可能填充可用空间，也可以收缩子元素使之不溢出。
+​Flex 弹性盒模型的优势在于只需声明布局应该具有的⾏为，⽽不需要给出具体的实现⽅式，浏览器负责完成实际布局，当布局涉及到不定宽度，分布对⻬的场景时，就要优先考虑弹性盒布局。
+
+### Grid
+
+Grid 是网格布局， CSS 二维布局。擅长将一个页面划分为几个主要区域，以及定义这些区域的大小、位置、层次等关系。
+
+## JS
+
+### 事件循环机制（event loop）
+
+Javascript 是单线程非阻塞的脚本语言。
+单线程是指 Javascript 代码在执行时，始终只有一个主线程来处理所有的任务。而非阻塞则是当进行一项异步任务时，主线程会挂起这个任务，然后在异步任务返回结果时根据一定规则去执行相应的回调。
+
+> 为了利用多核 CPU 的计算能力，HTML5 提出 Web Worker 标准，允许 JavaScript 脚本创建多个线程，但是子线程完全受主线程控制，且不得操作 DOM。所以，这个新标准并没有改变 JavaScript 单线程的本质。
+
+#### 任务队列
+
+所有任务可以分成两种，一种是同步任务（synchronous），另一种是异步任务（asynchronous）。同步任务指的是，在主线程上排队执行的任务，只有前一个任务执行完毕，才能执行后一个任务；异步任务指的是，不进入主线程、而进入"任务队列"（task queue）的任务，只有"任务队列"通知主线程，某个异步任务可以执行了，该任务才会进入主线程执行。
+
+具体来说，异步执行的运行机制如下。（同步执行也是如此，因为它可以被视为没有异步任务的异步执行。）
+
+> 1. 所有同步任务都在主线程上执行，形成一个`执行栈`（execution context stack）。
+>
+> 2. 主线程之外，还存在一个"任务队列"（task queue）。只要异步任务有了运行结果，就在"任务队列"之中放置一个事件。
+>
+> 3. 一旦"执行栈"中的所有同步任务执行完毕，系统就会读取"任务队列"，看看里面有哪些事件。那些对应的异步任务，于是结束等待状态，进入执行栈，开始执行。
+>
+> 4. 主线程不断重复上面的第三步。
+
+Javascript 就是上述 event loop(事件循环) 来实现非阻塞的。
+
+因为异步任务之间并不相同，因此他们的执行优先级也有区别。不同的异步任务被分为两类：微任务（micro task）和宏任务（macro task）。
+
+#### 宏任务
+
+- setInterval()
+- setTimeout()
+
+#### 微任务
+
+- new Promise()
+- new MutationObserver()
+
+当前执行栈执行完毕时会立刻先处理所有微任务队列中的事件，然后再去宏任务队列中取出一个事件。同一次事件循环中，微任务永远在宏任务之前执行。
+
+#### 考题
+
+```js
+console.log(1);
+setTimeout(() => console.log(2));
+Promise.resolve().then(() => console.log(3));
+Promise.resolve().then(() => setTimeout(() => console.log(4)));
+Promise.resolve().then(() => console.log(5));
+setTimeout(() => console.log(6));
+console.log(7);
+
+// 1,7,3,5,2,6,4
+```
+
+### 基本类型和引用类型的值
+
+一个变量可以存放两种类型的值，基本类型的值（primitive values）和引用类型的值（reference values）。
+
+#### 基本类型
+
+JavaScript 中共有 7 种基本数据类型。
+
+1. Undefined
+2. Null
+3. Boolean
+4. Number
+5. String
+6. Symbol
+7. BigInt
+
+基本数据类型的值都是按值访问的
+
+- 基本类型的值不可变
+  ```js
+  var str = '123hello';
+  str.toUpperCase(); // 123HELLO
+  console.log(str); // 123hello
+  ```
+- 基本类型的比较是它们的值比较
+  数据类型也可以进行比较，因为自动进行了数据类型的`隐式转换`
+  - `==`: 只比较值
+  - `===`: 不仅进行值的比较，还要进行数据类型的比较
+- 基本数据类型的变量是存放在`栈内存（Stack）`里的，读取的是内存里的值
+
+```js
+var a = 1;
+var b = true;
+console.log(a == b); // true
+console.log(a === b); // false
+```
+
+```js
+var a, b;
+a = 'zyj';
+b = a;
+console.log(a, b); // zyj zyj
+a = 'xyz';
+console.log(a, b); // xyz, zyj
+```
+
+图解如下：栈内存中变量标识符和变量的值变化
+![](sk05-1676274096246.png?w=732&h=291)
+
+#### 引用类型
+
+引用类型统称为 `Object 类型`。细分的话，有：`Object 类型`、`Array 类型`、`Date 类型`、`RegExp 类型`、`Function 类型`等。
+
+引用类型的是按引用访问的。具体看内存中表现:
+
+- 栈内存中保存了变量标识符和指向堆内存中该对象的指针
+- 堆内存中保存了对象的内容
+
+如图所示：
+![](2XCv-1676274741571.png?w=481&h=732)
+
+- 引用类型的值是可变的
+
+  ```js
+  var a = { name: 'a' };
+  var b = a;
+  b.name = 'b';
+  console.log(a.name); // 'b'
+  ```
+
+- 引用类型的比较是引用的比较
+  ```js
+  var obj1 = {};
+  var obj2 = {};
+  console.log(obj1 == obj2); // false
+  console.log(obj1 === obj2); // false
+  ```
+  因为 obj1 和 obj2 分别引用的是存放在堆内存中的 2 个不同的对象，故变量 obj1 和 obj2 的值（引用地址）也是不一样的！
+
+#### 检测类型
+
+- typeof: 用于检测一个变量是否基本的数据类型
+
+  ```js
+  typeof undefined; // "undefined"
+  typeof null; // "null"
+  typeof 666; // "number"
+  typeof 'xyz'; // "string"
+  const aa = Symbol();
+  typeof aa; // "symbol"
+  const bb = BigInt(100);
+  typeof bb; // "bigint"
+
+  typeof []; // "object"
+  typeof {}; // "object"
+  const dd = new Date();
+  typeof dd; // "object";
+  const x = /x/g;
+  typeof x; // "object";
+  // 特殊
+  function cc() {}
+  typeof cc; // "function"
+  ```
+
+- instanceof: 用来判断某个构造函数的 prototype 属性所指向的对象是否存在于另外一个要检测对象的原型链上（简单说就是判断一个引用类型的变量具体是不是某种类型的对象）
+  ```js
+  ({} instanceof Object); // true
+  [] instanceof Array; // true
+  /aa/g instanceof RegExp; // true
+  (function () {} instanceof Function); // true
+  ```
+
+### 原型链
+
+[基于原型的面向对象编程](/post/prototype)
+
+### null 与 undefined
+
+### 作用域与变量提升
+
+变量和函数声明从它们在代码中出现的位置被移动到了最上面，这个过程就叫做提升，三种作用域都是如此，`函数声明与 var 声明的变量`都会被提升。
+
+> 函数表达式不会被提升。
+
+let / const 进行的声明也会在块级作用域中进行提升，但是由于暂时性死区的存在使 let / const 不能在声明之前被使用，这与 var 的变量提升不太一样,由暂时性死区的存在使得我们无法直观感受到变量提升的效果。
+
+```js
+var a = 2;
+// 实际被看成两个声明 var a ; a = 2;
+// 第一个定义声明是在编译阶段进行的，第二个复制声明会被留在原地等待执行阶段
+foo1(); // 执行正确
+foo2(); // 执行错误
+function foo1() {}
+var foo2 = function () {};
+```
+
+在非严格模式下，直接给未经声明的变量赋值，该变量都会变成全局对象的属性。
+
+```js
+variate = '111';
+console.log(window.variate); // '111'
+```
+
+### 精确度
+
+0.1 + 0.2 !== 0.3
+
+### toString 和 valueOf 的差异
+
+除了 null，其他数据类型都有这两个方法。它们是原型链上的方法，也会为了解决 javascript 值运算与显示的问题。
+
+#### toString
+
+> 返回一个表示该对象的字符串，当对象表示为文本值或以期望的字符串方式被引用时，toString 方法被自动调用。
+
+```js
+let a = {};
+let b = [1, 2, 3];
+let c = '123';
+let d = function dd() {
+  console.log('fn');
+};
+
+console.log(a.toString()); // '[object Object]'
+console.log(b.toString()); // '1,2,3'
+console.log(c.toString()); // '123'
+console.log(d.toString()); // 'function(){...}'
+```
+
+**用途**
+使用 `toString` 配合 `typeof` & `instanceof` 来实现精准的类型判断
+
+```js
+toString.call(() => {}); // [object Function]
+toString.call({}); // [object Object]
+toString.call([]); // [object Array]
+toString.call(''); // [object String]
+toString.call(22); // [object Number]
+toString.call(undefined); // [object undefined]
+toString.call(null); // [object null]
+toString.call(new Date()); // [object Date]
+toString.call(Math); // [object Math]
+toString.call(window); // [object Window]
+```
+
+#### valueOf
+
+> 返回当前对象的原始值
+
+valueOf 偏向于运算，toString 偏向于显示
+
+[全面分析 toString 与 valueOf](https://cloud.tencent.com/developer/article/1768047)
+
+### call 与 apply 方法
+
+`call()` 方法使用一个指定的 `this` 值和单独出的一个或多个参数来调用一个函数。
+
+> call() 和 apply 类似，唯一的区别是 call() 方法接受的是`参数列表`，而 apply() 接受的是一个`包含多个参数的数组`。
+
+语法
+
+```js
+function.call(thisArg,arg1,arg2,...)
+
+apply(thisArg)
+apply(thisArg, argsArray)
+```
+
+#### bind()
+
+`bind()` 方法创建一个新的函数，在 `bind()` 被调用时，这个新函数的 `this` 被指定为 `bind()` 的第一个参数，而其余参数将作为新函数的参数，供调用时使用。
+语法：
+
+```js
+function.bind(thisArg[, arg1[, arg2[,...]]])
+```
+
+实例如下：
+
+```js
+function fn(a, b, c) {
+  return a + b + c;
+}
+var _fn = fn.bind(null, 10); // 10 作为默认的第一个参数
+var ans = _fn(20, 30, 40); // 60
+```
+
+## 网络篇
+
+## 浏览器
+
+### 运行机制
+
+[浏览器原理详解](/post/operating_principle_of_browser)
+
+### web worker
+
+### 安全
+
+#### 浏览器同源策略
+
+> 同源策略限制了从同一个源加载的文档或脚本如何与另一个源的资源进行交互。这是浏览器的一个用于隔离潜在恶意文件的重要的安全机制。同源指的是：`协议`、`端口号`、`域名`必须一致。
+
+同源策略主要限制了三个方面:
+
+- 当前域下的 js 脚本不能够访问其他域下的 cookie、localStorage 和 indexDB。
+- 当前域下的 js 脚本不能够操作访问操作其他域下的 DOM。
+- 当前域下 ajax 无法发送跨域请求。
+
+同源政策的目的主要是为了保证用户的信息安全，它只是对 js 脚本的一种限制，并不是对浏览器的限制，对于一般的 `img`、或者 `script` 脚本请求都不会有跨域的限制，这是因为这些操作都不会通过响应结果来进行可能出现安全问题的操作。
+
+##### 如何解决跨域问题
+
+1. CORS（跨域资源共享）
+
+   > 跨域资源共享(CORS) 是一种机制，它使用额外的 HTTP 头来告诉浏览器   让运行在一个 origin (domain)上的 Web 应用被准许访问来自不同源服务器上的指定的资源。当一个资源从与该资源本身所在的服务器不同的域、协议或端口请求一个资源时，资源会发起一个跨域 HTTP 请求。
+
+   CORS 需要浏览器和服务器同时支持，整个 CORS 过程都是浏览器完成的，无需用户参与。因此实现 CORS 的关键就是服务器，只要服务器实现了 CORS 请求，就可以跨源通信了。
+
+   浏览器将 CORS 分为简单请求和非简单请求：
+   简单请求不会触发 CORS 预检请求。若该请求满足以下两个条件，就可以看作是简单请求：
+
+   - 请求方法是一下三种方法之一:HEAD,GET,POST
+   - HTTP 的头信息不超过一下几种字段:Accept,Accept-Language,Last-Event-ID,Content-Type
+
+2. 非简单请求
+   非简单请求是对服务器有特殊要求的请求，比如请求方法为 DELETE 或者 PUT 等。非简单请求的 CORS 请求会在正式通信之前进行一次 HTTP 查询请求，称为预检请求。
+   预检请求使用的请求方法是 OPTIONS，表示这个请求是来询问的。
+
+OPTIONS 请求次数过多就会损耗页面加载的性能，降低用户体验度。所以尽量要减少 OPTIONS 请求次数，可以后端在请求的返回头部添加：Access-Control-Max-Age：number。它表示预检请求的返回结果可以被缓存多久，单位是秒。该字段只对完全一样的 URL 的缓存设置生效，所以设置了缓存时间，在这个时间范围内，再次发送请求就不需要进行预检请求了。
+
+3. JSONP
+
+4. nginx 代理跨域
+   nginx 代理跨域，实质和 CORS 跨域原理一样，通过配置文件设置请求响应头 Access-Control-Allow-Origin…等字段。
+
+5. nodejs 中间件代理跨域
+
+### 前端缓存
+
+#### http 缓存
+
+#### 浏览器缓存
+
+#### 浏览器事件机制
+
+## React
+
+### 数据流方案
+
+## Typescript
+
+## Webpack
+
+## 算法题
+
+## 小程序

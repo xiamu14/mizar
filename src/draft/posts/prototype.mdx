@@ -1,0 +1,60 @@
+---
+title: 基于原型的面向对象编程
+description: 基于原型的面向对象编程
+cover: hXY4-1676245129483.webp?w=750&h=375
+tags: prototype|class|extend|new
+status: common
+date: 2023-02-12
+---
+
+## 从问题入手
+
+### 为什么 `Object.prototype.__proto__ === null` ?
+
+看下面的一段代码:
+
+```js
+const a = new Object(); // 使用 Object 实例 a
+Object.prototype === a.__proto__; // 构造函数 Object 的 prototype 属性和 实例 a 的 __proto__ 属性指向同一对象
+a.__proto__.__proto__ === null; // a 的原型对象 [[prototype]] 是 Object， Object 的原型对象 [[prototype]] 是 null
+Object.prototype.__proto__ === null;
+```
+
+> 因为 **proto** 是浏览器私有属性，不能更改。所以当我们想要在原型链上实现继承，就只能利用原型对象所对应构造函数上的 prototype 增加属性和方法。
+
+> `__proto__` 是被废弃的，读取原型对象 [[prototype]] 更好的方式是 Object.getPrototypeOf() 方法
+
+### constructor 属性
+
+每个实例对象都从原型中继承了一个 constructor 属性，该属性指向了用于构造此实例对象的构造函数。
+
+```js
+const c = new Object();
+c.constructor === Object;
+```
+
+### 使用 `new` 会执行哪些操作？
+
+new 运算符创建一个用户定义的对象数据类型的实例或者具有构造函数内置对象的实例。
+
+它具体会执行的操作:
+
+- 首先创建一个新的空对象
+- 然后将空对象的 `__proto__` 属性指向构造函数的 `prototype` 属性
+- 改变 `this` 的指向，指向空对象
+- 对构造函数的返回值做判断，然后返回对应的值
+  - 一般返回第一步创建的空对象；
+  - 但是当构造函数返回的值是`对象类型时则返回该对象`，是`原始类型则返回第一步创建的空对象`。
+
+```js
+function Person() {
+  return { a: 'a' };
+}
+const m = new Person();
+
+m.__proto__ !== Person.prototype; // true
+```
+
+### 私有属性、私有方法
+
+使用 `#`开头命名的属性和方法

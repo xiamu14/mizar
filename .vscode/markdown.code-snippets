@@ -24,7 +24,7 @@
   "input image": {
     "scope": "markdown",
     "prefix": "/image",
-    "body": ["![$1]($2)?w=&h="],
+    "body": ["![$1]($2?w=&h=)"],
     "description": "input a image element"
   },
   "input link": {
