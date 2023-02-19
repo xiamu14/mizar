@@ -48,7 +48,9 @@ img {
 }
 
 body {
+  color: #333;
   --border-color: #e2e8f0;
+  background-color: white;
 
   --main-font-color: #1a202c;
   --main-bgd-color: #f7fafc;

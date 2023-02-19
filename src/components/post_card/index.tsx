@@ -20,7 +20,7 @@ function $PostCard(props: Props) {
   }, [data]);
 
   return (
-    <Link href={`/post/${data.slug}`}>
+    <Link href={`/post/${data.slug}`} style={{ minWidth: 0 }}>
       <div className={style['post-card']}>
         <AspectDiv width="100%" height="54%">
           <div className={style['cover']}>
