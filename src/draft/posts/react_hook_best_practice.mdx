@@ -1,0 +1,200 @@
+---
+title: React Hooks 最佳实践
+description: 最佳实践整理
+cover: -8J9-1676858389969.webp
+tags: react|hooks|practices
+status: common
+date: 2023-02-20
+---
+
+## 简介
+
+React 16.8 于 2019.2 正式发布，这是一个能提升代码质量和开发效率的特性，笔者就抛砖引玉先列出一些实践点，希望得到大家进一步讨论。
+
+然而需要理解的是，没有一个完美的最佳实践规范，对一个高效团队来说，稳定的规范比合理的规范更重要，因此这套方案只是最佳实践之一。
+
+## 组件定义
+
+FC 采用 const + 箭头函数方式定义：
+
+```ts
+const App: React.FC<{ title: string }> = ({ title }) => {
+  return React.useMemo(() => <div>{title}</div>, [title]);
+};
+
+App.defaultProps = {
+  title: 'Function Component',
+};
+```
+
+上面的例子包含了：
+
+1. 用 `React.FC` 申明 Function Component 组件类型与定义 Props 参数类型。
+2. 用 `React.useMemo` 优化渲染性能。
+3. 用 `App.defaultProps` 定义 Props 的默认值。
+
+**FAQ**
+
+> 为什么不用 React.memo?
+
+推荐使用 `React.useMemo` 而不是 `React.memo`，因为在组件通信时存在 `React.useContext` 的用法，这种用法会使所有用到的组件重渲染，只有 `React.useMemo` 能处理这种场景的按需渲染。
+
+> 没有性能问题的组件也要使用 useMemo 吗？
+
+要，考虑未来维护这个组件的时候，随时可能会通过 `useContext` 等注入一些数据，这时候谁会想起来添加 `useMemo` 呢？
+
+> 为什么不用解构方式代替 defaultProps?
+
+虽然解构方式书写 `defaultProps` 更优雅，但存在一个硬伤：对于对象类型每次 Rerender 时引用都会变化，这会带来性能问题，因此不要这么做。
+
+## 局部状态
+
+局部状态有三种，根据常用程度依次排列：`useState`，`useRef`，`useReducer`。
+
+### useState
+
+```ts
+const [hide, setHide] = React.useState(false);
+const [name, setName] = React.useState('BI');
+```
+
+状态函数名要表意，尽量聚集在一起申明，方便查阅。
+
+### useRef
+
+```ts
+const dom = React.useRef(null);
+```
+
+useRef 尽量少用，大量 `Mutable` 的数据会影响代码的可维护性。
+
+但对于不需重复初始化的对象推荐使用 `useRef` 存储，比如 `new G2()` 。
+
+### useReducer
+
+局部状态不推荐使用 `useReducer` ，会导致函数内部状态过于复杂，难以阅读。 `useReducer` 建议在多组件间通信时，结合 `useContext` 一起使用。
+
+**FAQ**
+
+> 可以在函数内直接申明普通常量或普通函数吗？
+
+不可以，Function Component 每次渲染都会重新执行，常量推荐放到函数外层避免性能问题，函数推荐使用 `useCallback` 申明。
+
+## 函数
+
+所有 Function Component 内函数必须用 `React.useCallback` 包裹，以保证准确性与性能。
+
+```ts
+const [hide, setHide] = React.useState(false);
+
+const handleClick = React.useCallback(() => {
+  setHide((isHide) => !isHide);
+}, []);
+```
+
+`useCallback` 第二个参数必须写，`eslint-plugin-react-hooks` 插件会自动填写依赖项。
+
+## 发请求
+
+发请求分为操作型发请求和渲染型发请求。
+
+### 操作型发请求
+
+操作型发请求，作为回调函数：
+
+```ts
+return React.useMemo(() => {
+  return <div onClick={requestService.addList} />;
+}, [requestService.addList]);
+```
+
+### 渲染型发请求
+
+渲染型发请求在 useAsync 中进行，比如刷新列表页，获取基础信息，或者进行搜索， **都可以抽象为依赖了某些变量，当这些变量变化时要重新取数** ：
+
+```ts
+const { loading, error, value } = useAsync(async () => {
+  return requestService.freshList(id);
+}, [requestService.freshList, id]);
+```
+
+## useEffect 注意事项
+
+事实上，`useEffect` 是最为怪异的 Hook，也是最难使用的 Hook。比如下面这段代码：
+
+```ts
+useEffect(() => {
+  props.onChange(props.id);
+}, [props.onChange, props.id]);
+```
+
+如果 id 变化，则调用 `onChange`。但如果上层代码并没有对 `onChange` 进行合理的封装，导致每次刷新引用都会变动，则会产生严重后果。我们假设父级代码是这么写的：
+
+```ts
+class App {
+  render() {
+    return (
+      <Child id={this.state.id} onChange={(id) => this.setState({ id })} />
+    );
+  }
+}
+```
+
+这样会导致死循环。虽然看上去 `<App>` 只是将更新 id 的时机交给了子元素 `<Child>`，但由于 `onChange` 函数在每次渲染时都会重新生成，因此引用总是在变化，就会出现一个无限死循环：
+新 `onChange` -> `useEffect` 依赖更新 -> `props.onChange` -> 父级重渲染 -> 新 `onChange`...
+想要阻止这个循环的发生，只要改为 o`nChange={this.handleChange}` 即可，**useEffect 对外部依赖苛刻的要求，只有在整体项目都注意保持正确的引用时才能优雅生效。**
+
+然而被调用处代码怎么写并不受我们控制，这就导致了不规范的父元素可能导致 React Hooks 产生死循环。
+
+因此在使用 `useEffect` 时要注意调试上下文，注意父级传递的参数引用是否正确，如果引用传递不正确，有两种做法：
+
+1. 使用 [useDeepCompareEffect](https://github.com/streamich/react-use/blob/master/docs/useDeepCompareEffect.md) 对依赖进行深比较。
+2. 使用 useCurrentValue 对引用总是变化的 props 进行包装：
+
+   ```ts
+   function useCurrentValue<T>(value: T): React.RefObject<T> {
+     const ref = React.useRef(null);
+     ref.current = value;
+     return ref;
+   }
+
+   const App: React.FC = ({ onChange }) => {
+     const onChangeCurrent = useCurrentValue(onChange);
+   };
+   ```
+
+`onChangeCurrent` 的引用保持不变，但每次都会指向最新的 `props.onChange`，从而可以规避这个问题。
+
+## debounce 优化
+
+比如当输入框频繁输入时，为了保证页面流畅，我们会选择在 onChange 时进行 debounce 。然而在 Function Component 领域中，我们有更优雅的方式实现。
+
+> 其实在 Input 组件 onChange 使用 debounce 有一个问题，就是当 Input 组件 受控 时， debounce 的值不能及时回填，导致甚至无法输入的问题。
+
+我们站在 Function Component 思维模式下思考这个问题：
+
+1. React scheduling 通过智能调度系统优化渲染优先级，我们其实不用担心频繁变更状态会导致性能问题。
+2. 如果联动一个文本还觉得慢吗？ `onChange` 本不慢，大部分使用值的组件也不慢，没有必要从 `onChange` 源头开始就 `debounce` 。
+3. 找到渲染性能最慢的组件（比如 iframe 组件），对一些频繁导致其渲染的入参进行 `useDebounce` 。
+
+下面是一个性能很差的组件，引用了变化频繁的 `text` （这个 `text` 可能是 `onChange` 触发改变的），我们利用 `useDebounce` 将其变更的频率慢下来即可：
+
+```ts
+const App: React.FC = ({ text }) => {
+  // 无论 text 变化多快，textDebounce 最多 1 秒修改一次
+  const textDebounce = useDebounce(text, 1000);
+
+  return useMemo(() => {
+    // 使用 textDebounce，但渲染速度很慢的一堆代码
+  }, [textDebounce]);
+};
+```
+
+使用 `textDebounce` 替代 `text` 可以将渲染频率控制在我们指定的范围内。
+
+## 状态管理
+
+对全局状态进行管理时，应遵循下面规则：
+
+1. 组件内不更新状态，只调用更新状态的方法或 hook 函数。和局部状态的使用一致。
+2. 状态的值要清晰且简单，在视图显示时如果要转换通过`中间层`(selector)获得显示值。

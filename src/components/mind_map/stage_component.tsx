@@ -16,11 +16,6 @@ function StageComponent({ post, data }: { post?: Post; data?: any }) {
           name: post.title,
           children: getTreeData(toc),
         };
-        console.log(
-          '%c debug',
-          'background: #69c0ff; color: white; padding: 4px',
-          data
-        );
 
         drawTree(data);
       }

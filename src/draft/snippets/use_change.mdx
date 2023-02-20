@@ -1,0 +1,39 @@
+---
+title: 'State Change Hook'
+description: 'complete equality judgment'
+cover: 'PWN3-1676843111886.png'
+date: 2023-02-20
+---
+
+## 完全相等判断状态值
+
+```ts
+import { isEqual } from 'lodash-es';
+import { useEffect, useRef } from 'react';
+function useChange<T>(action: (prop: T) => void, prop: T) {
+  const prev = useRef<T | undefined>();
+
+  useEffect(() => {
+    if (!isEqual(prev.current, prop)) {
+      prev.current = prop;
+      action(prop);
+    }
+  }, [action, prop]);
+}
+
+export default useChange;
+```
+
+## 🐠 使用方式
+
+```ts
+import useChange from './use_change';
+
+function useCustom() {
+  const [state] = useState({});
+
+  useChange((draft) => {
+    // do something
+  }, state);
+}
+```
