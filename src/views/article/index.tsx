@@ -1,3 +1,4 @@
+import { Drawer } from '@geist-ui/core';
 import { allPosts, allSnippets, Post, Snippet } from 'contentlayer/generated';
 import { format, parseISO } from 'date-fns';
 import { useMDXComponent } from 'next-contentlayer/hooks';
@@ -6,6 +7,7 @@ import { useLocation } from 'react-use';
 import AspectDiv from '../../components/aspect_div';
 import Divider from '../../components/divider';
 import mdxComponent from '../../components/mdx_component';
+import MindMap from '../../components/mind_map';
 import MyImage from '../../components/my_image';
 import ContentSpace from '../../layouts/content_space';
 import emptyCode from '../../utils/empty_code';
@@ -13,7 +15,7 @@ import style from './index.module.scss';
 export default function Article() {
   const location = useLocation();
   const [data, setData] = useState<Snippet | Post>();
-
+  const [mindDrawerVisible, setMindDrawerVisible] = useState(false);
   useEffect(() => {
     const dataset = location.pathname?.includes('post')
       ? allPosts
@@ -24,22 +26,19 @@ export default function Article() {
     setData(article);
   }, [location.pathname]);
 
-  const handleOpenMind = useCallback(() => {
-    window.open(
-      `/mind/${data?.slug}`,
-      '_blank',
-      'height=600,width=1200,top=0,left=0,toolbar=no,menubar=no'
-    );
-  }, [data]);
-
   const Component = useMDXComponent(data ? data.body.code : emptyCode);
+
+  const handleCloseMindDrawer = useCallback(() => {
+    setMindDrawerVisible((prev) => !prev);
+  }, []);
+
   if (!data) return null;
 
   return (
     <ContentSpace>
       <div className={style['box']}>
         <header className={style.header}>
-          <h1 className={style['title']} onClick={handleOpenMind}>
+          <h1 className={style['title']} onClick={handleCloseMindDrawer}>
             {data.title}
           </h1>
           <p className={style['description']}>{data.description}</p>
@@ -68,6 +67,17 @@ export default function Article() {
           </div> */}
         </div>
       </div>
+      <Drawer
+        visible={mindDrawerVisible}
+        onClose={handleCloseMindDrawer}
+        placement="right"
+        style={{ width: 600 }}
+      >
+        <Drawer.Title>思维导图</Drawer.Title>
+        <Drawer.Content>
+          <MindMap post={data as Post}></MindMap>
+        </Drawer.Content>
+      </Drawer>
     </ContentSpace>
   );
 }

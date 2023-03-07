@@ -300,5 +300,10 @@ const buchheim = (tree) => {
 export function drawTree(treeData) {
   let tree = new DrawTree(calcSize(deepCopy(treeData)));
   tree = buchheim(tree);
+  console.log(
+    '%c tree',
+    'color:white;background: rgb(83,143,204);padding:4px',
+    tree
+  );
   renderTree(tree, 'mind');
 }

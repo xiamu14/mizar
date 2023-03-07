@@ -1,5 +1,3 @@
-import { dc } from './text_wrap';
-
 // 深拷贝
 export const deepCopy = (data: string) => {
   return JSON.parse(JSON.stringify(data));
@@ -20,7 +18,7 @@ export const calcSize = (data: any) => {
   const list = data;
   const resize = (child: any) => {
     const size = getVSize(child.name)[0];
-    child.name = dc.getWrapString(child.name);
+
     child.width = size.width;
     child.height = size.height;
     if (child.children) {

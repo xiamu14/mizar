@@ -3,7 +3,6 @@ import { Layer } from 'konva/lib/Layer';
 
 export const NODE_SPACE = 20;
 export const NODE_SPACE_X = 50;
-const SIZE = 1200;
 
 const color = '#363636';
 
@@ -12,8 +11,9 @@ let layer: Layer | null = null;
 export const init = (drawBox: string | HTMLDivElement) => {
   let stage = new Konva.Stage({
     container: drawBox,
-    width: SIZE,
-    height: SIZE * 2,
+    width: 600,
+    height: 800,
+    draggable: true,
   });
   layer = new Konva.Layer();
   stage.add(layer);
@@ -32,21 +32,34 @@ export const drawNode = (
   let rect = new Konva.Rect({
     x: x - 5,
     y: y - height / 2,
-    width: width + 10,
-    height,
+    width: width + 20,
+    height: height + 10,
     cornerRadius: 10,
     fill: '#fff',
     stroke: '#5a4cfb',
     strokeWidth: 1,
   });
   layer?.add(rect);
+
   let text = new Konva.Text({
     x: x,
-    y: y,
+    y: y + 5,
     text: name,
     fontSize: 14,
     lineHeight: 1.5,
+    width: width + 10,
+    padding: 5,
     fill: color,
+    align: 'center',
+  });
+  text.on('click', () => {
+    const element = document.getElementById(name.toLowerCase());
+    element?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest',
+    });
+    // window.location.href = window.location.href + '#' + name.toLowerCase();
   });
   text.offsetX(-(width - text.width()) / 2);
   text.offsetY(text.height() / 2);
