@@ -35,5 +35,8 @@
     "rehype-prism-plus": "^1.5.0",
     "rehype-slug": "^5.1.0",
     "sass": "^1.56.1"
+  },
+  "volta": {
+    "node": "16.14.2"
   }
 }

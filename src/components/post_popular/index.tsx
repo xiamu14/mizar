@@ -33,7 +33,7 @@ function $PostPopular() {
         </svg>
         Popular
       </header>
-      {posts.map((post, index) => {
+      {posts.slice(0, 2).map((post, index) => {
         return (
           <Link href={`/post/${post.slug}`} key={index}>
             <div className={style.item}>{post.title}</div>

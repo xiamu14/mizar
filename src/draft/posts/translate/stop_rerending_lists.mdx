@@ -1,0 +1,199 @@
+---
+title: 译《How to stop re-rendering lists in React?》
+description: 翻译“在 React 中如何停止重新渲染列表？”
+cover: TQuW-1678181265507.jpg?w=1400&h=933
+tags: react|list|re-rending
+status: common
+date: 2023-03-07
+---
+
+> You have a list of components in React. The parent holds the state and passes it to the list items. Every time you update the property of one of the components in the list, the entire list re-renders. How to prevent that?
+
+React 中的组件列表，父级组件保存状态并将其传递给列表项组件。每次更新列表中其中一个组件的属性时，整个列表都会重新呈现。如何防止这种情况？
+
+<video
+  src="https://alexsidorenko.com/d19ef96771a6980008c1a5a447f6f5fb/initial.mp4"
+  autoplay="autoplay"
+  control="control"
+  loop="loop"
+  width="500"
+  height="300"
+></video>
+
+### 组件总是重新渲染
+
+> First, let’s simplify our example by removing all props from the Item. We will still update the parent state but won’t pass any props to list items.
+
+首先，让我们通过从 Item 中删除所有道具来简化我们的示例。我们仍将更新父状态，但不会将任何道具传递给列表项。
+
+<video
+  src="https://alexsidorenko.com/3b8a9a3469ca492cbfc585c3b628b514/simple.mp4"
+  width="500"
+  height="300"
+  autoplay="autoplay"
+  control="control"
+  loop="loop"
+></video>
+
+> There is a common misconception that a React component will not re-render unless one of its properties changes. This is not true:
+>
+> > React does not care whether “props changed” - it will render child components unconditionally just because the parent rendered!
+> >
+> > -- Mark Erikson - [A (Mostly) Complete Guide to React Rendering Behavior](https://blog.isquaredsoftware.com/2020/05/blogged-answers-a-mostly-complete-guide-to-react-rendering-behavior/#standard-render-behavior)
+
+有一个常见的误解，认为 React 组件不会重新渲染，除非它的一个属性发生变化。这不是真的：
+
+> React 不关心“ props 是否改变”——它会无条件地渲染子组件，只要父组件渲染了！
+
+> If you don’t want a component to re-render when its parent renders, wrap it with memo. After that, the component indeed will only re-render when its props change.
+
+如果你不想让一个组件在它的父组件渲染时重新渲染，可以用 memo 包裹它。在那之后，组件确实只会在其 props 更改时重新渲染。（context 会打破这种情况）
+
+```jsx
+const Item = memo(() => <div>Item</div>);
+```
+
+<video
+  src="https://alexsidorenko.com/06ffda3e750e7567425efc46887e3847/simple-memo.mp4"
+  width="500"
+  height="300"
+  autoplay="autoplay"
+  control="control"
+  loop="loop"
+
+> </video>
+
+## 用 `memo` 解决我们的问题
+
+> Let’s get back to our initial example and wrap `Item` with `memo`. Here is a slightly simplified code.
+
+让我们回到我们最初的例子，用 `memo` 包装 `Item`。这是一个稍微简化的代码。
+
+```jsx
+const Item = memo(({ id, value, onChange }) => {
+  return <input onChange={(e) => onChange(id, e.target.value)} value={value} />;
+});
+```
+
+> It doesn’t work. We still have the same problem. But why?
+>
+> **If the component wrapped with memo re-renders, it means that one of its properties changes.** Let’s figure out which one.
+
+它不起作用。我们仍然有同样的问题。但为什么？
+如果用 memo 包装的组件重新渲染，则意味着它的一个属性发生了变化。让我们弄清楚是哪一个。
+
+### 记忆属性
+
+> We know from looking at the state that `value` only changes for one item in the list. The `id` property is also stable. So it must be `onChange` property that changes. Let’s check the `Parent` code to see how we pass the props.
+
+通过查看状态，我们知道列表中只有一项的值发生变化。 id 属性也很稳定。所以它必然是 onChange 属性发生变化。让我们检查一下 Parent 代码，看看我们是如何传递 props 的。
+
+```jsx
+const Parent = () => {
+  const [items, setItems] = useState([
+    { value: '' },
+    { value: '' },
+    { value: '' }
+  ])
+  return (
+    <div>
+      {items.map((item, index) => (
+        <Item
+          key={index}
+          id={index}
+          value={item.value}
+          onChange={(id, value) =>
+            setState(state.map((item, index) => {
+              return index !== id ? item : { value: value }
+          })}
+          />
+      )}
+    </div>
+  )
+}
+```
+
+> Here is our problem:
+
+这里就是问题所在：
+
+```jsx
+onChange={(id, value) =>
+  setState(state.map((item, index) => {
+    return index !== id ? item : { value: value }
+})}
+```
+
+> **Anonymous functions will always get a new reference on every render.** This means that `onChange` property will change every time Parent renders. To prevent that, we need to memoize it with `useCallback`. Let’s do that:
+
+匿名函数总是会在每次渲染时得到一个新的引用。这意味着每次 Parent 渲染时 onChange 属性都会改变。为了防止这种情况，我们需要使用 useCallback 来记忆它。让我们这样做：
+
+```jsx
+const Parent = () => {
+  ...
+
+  const onChange = useCallback((id, value) => {
+    setItems(items.map((item, index) => {
+      return index !== id ? item : { value: value }
+    }))
+  }, [items])
+
+  return (
+    <div>
+      {items.map((item, index) => (
+        <Item
+          key={index}
+          id={index}
+          value={item.value}
+          onChange={onChange}
+          />
+      )}
+    </div>
+	)
+}
+
+```
+
+> It still doesn’t work - every component re-renders.
+
+它仍然不起作用——每个组件都重新渲染。
+
+> This happens because we put `items` as a dependency for `useCallback` . Every time `items` update, `useCallback` returns a new reference of the function. This causes `onChange` prop to change, therefore updating every component in the list.
+
+发生这种情况是因为我们将 `items` 作为 `useCallback` 的依赖项。每次项目更新时，`useCallback` 都会返回函数的新引用。这会导致 `onChange` 属性发生变化，从而更新列表中的每个组件。
+要解决这个问题，我们需要停止依赖项作为依赖项。我们可以通过功能状态更新来实现：
+
+> To fix this, we need to stop relying on `items` as a dependency. We can achieve that with a `functional state update`:
+
+要解决这个问题，我们需要停止使用 `items` 作为依赖项。我们可以通过 `functional state update` 来实现：
+
+```jsx
+const onChange = useCallback((id, value) => {
+  setItems((prevItems) =>
+    prevItems.map((item, index) => {
+      return index !== id ? item : { value: value };
+    })
+  );
+}, []); // No dependencies
+```
+
+<video
+  src="https://alexsidorenko.com/a8c457c3ad49ef8cea2c76e4a8e5e38f/fixed.mp4"
+  width="500"
+  height="300"
+  autoplay="autoplay"
+  control="control"
+  loop="loop"
+></video>
+
+> Now, the only property of the `Item` that changes is `value`. And since we only update one `value` at a time, it prevents other components in the list from re-rendering.
+
+现在，唯一改变的 Item 属性是值。由于我们一次只更新一个值，因此它可以防止列表中的其他组件重新呈现。
+
+### 我应该为每个列表都这样做吗？
+
+> You don’t have to optimize every unnecessary re-render in React. React render is quite performant. It only updates DOM when needed. And `memo` comes with a small performance cost as well. Optimize it when you have a lot of items in the list and your render function is expensive.
+
+你不必在 React 中优化每一个不必要的重新渲染。 React 渲染非常高效。它只在需要时更新 DOM，并且 `memo` 也会带来很小的性能成本。当列表中有很多项目并且渲染功能很昂贵时优化它。
+
+> 原文地址：[《How to stop re-rendering lists in React?》](https://alexsidorenko.com/blog/react-list-rerender/)

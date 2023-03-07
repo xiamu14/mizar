@@ -24,10 +24,10 @@ export function MapView() {
         .filter(
           (it) =>
             it.status !== 'draft' &&
-            it._raw.sourceFileDir.includes(data?.name ?? '')
+            it._raw.sourceFileDir.includes((data?.key ?? '').toLowerCase())
         )
         .sort((a, b) => Number(new Date(b.date)) - Number(new Date(a.date))),
-    [data?.name]
+    [data?.key]
   );
 
   return (

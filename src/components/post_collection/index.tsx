@@ -27,7 +27,7 @@ function $PostCollection() {
         </svg>
         Collection
       </header>
-      {maps.map((item, index) => {
+      {maps.slice(0, 2).map((item, index) => {
         return (
           <Link href={`/map/${item.name}`} key={index}>
             <div className={style.item}>
