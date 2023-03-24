@@ -1,0 +1,31 @@
+---
+title: 循环中的并发与顺序
+description: JavaScript 中循环里的并发与顺序
+cover: wKyC-1679673020767.webp?w=1024&h=635
+tags: JavaScript|loop
+status: common
+date: 2023-03-24
+---
+
+## 在数组循环遍历中顺序执行异步操作？
+
+数组的遍历方式有 `forEach`、`for...of`、 `for` 等。其中 `forEach` 中回调函数都是并发执行的。
+同样，`find` 和 `findIndex` 函数也都是并发调用回调函数的。
+
+`for` 和 `for...of` 是顺序调用的，如果函数体里有异步操作，需要等待异步操作完成才执行下一个循环。
+
+使用 async/await 可以更简洁地完成顺序组合：
+
+```javascript
+let result;
+for (const f of [func1, func2, func3]) {
+  try {
+    result = await f(result);
+    break;
+  } catch (error) {
+    // console.error(error)
+  }
+}
+```
+
+使用场景：在接口获取资源时，兜底逻辑常用到。当默认异步请求成功则中断后续请求，失败则开始后续请求，直到所有请求都失败。
