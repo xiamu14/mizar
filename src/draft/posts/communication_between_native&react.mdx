@@ -1,0 +1,135 @@
+---
+title: React Native 和原生之间通信方式
+description: 深入浅出React Native 和原生之间通信方式
+cover: mgz--1681630041678.webp?w=664&h=417
+tags: React Native|Android|iOS|communication
+status: common
+date: 2023-04-16
+---
+
+## React Native 和原生之间的通信方式
+
+React Native 开发中，经常要和原生之间进行通信，大致可以分为 2 种情况:
+
+- Android 主动向 JS 端传递事件、数据
+- JS 端被动向 Android 询问获取事件、数据
+
+主要方式有三种：
+
+1. 事件方式(RCTDeviceEventEmitter):可任意时刻传递，Native 主导控制。
+2. CallBack 回调方式：JS 调用一次，Native 返回一次
+3. Promises 方式：JS 调用一次，Native 返回一次
+
+### RCTDeviceEventEmitter
+
+在 Native 模块
+
+```java
+// 延迟0.1秒获取时间
+@ReactMethod
+public void getTime() {
+  new Thread(new Runnable() {
+    @Override
+    public void run() {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e) {
+        e.printStackTrace()
+      }
+
+      SimpleDateFormat formatDate = new SimpleDateFormat("yyyy年MM月dd日  HH:mm:ss");
+                Date date = new Date(System.currentTimeMillis());
+                String time = formatDate.format(date);
+
+                WritableMap writableMap = new WritableNativeMap();
+                writableMap.putString("key", time);
+                sendTransMisson(mReactContext, "EventName", writableMap);
+
+  }).start();
+}
+
+ /**
+     * @param reactContext
+     * @param eventName    事件名
+     * @param params       传惨
+     */
+    public void sendTransMisson(ReactContext reactContext, String eventName, @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+
+    }
+```
+
+getTime()主要为 JS 端调用 Native 的方法，在内部调用
+sendTransMisson 进行事件发送。 sendTransMisso 这个方法名可以任意取
+
+你喜欢就好,内部参数 eventName 为事件名，params 为传递的事件属性。
+在 JS 端监听事件：
+
+```js
+useEffect(() => {
+  DeviceEventEmitter.addListener('EventName', (msg) => {
+    console.log(msg);
+    ToastAndroid.show(
+      'DeviceEventEmitter 收到消息：' + '\n' + msg.key,
+      ToastAndroid.SHORT
+    );
+  });
+}, []);
+```
+
+### JS 被动向 Android 询问事件、消息
+
+- callback 回调接受
+  Native 部分：
+
+  ```java
+  @ReactMethod
+  public void  callBackTime(String name,Callback callback){
+      callback.invoke(getTimeMillis());
+  }
+  ```
+
+  JS 端发送：
+
+  ```js
+  getCallBackTime() {
+    NativeModules.TransMissonModule.callBackTime("Allure",(msg)=>{
+      console.log(msg);
+      ToastAndroid.show("CallBack收到消息："+msg.ToastAndroid.SHORT)
+    })
+  }
+  ```
+
+- Promise 传递
+  promise 在 JS 中很常见，而 android 也有类似的就是 RxJava,可以通过链式将复杂代码结构转为简短易读的代码。由于 promise 不确定成功与失败，需要同步状态。一般会调用 then 接口。
+  Native 端：
+
+  ```java
+  @ReactMethod
+  public void sendPromiseTime(String name, Promise promise) {
+    WritableMap writableMap = new WritableNativeMap();
+    writableMap.putString("age","20");
+    writableMap.putString("time",getTimeMillis());
+    promise.resolve(writableMap);
+  }
+  ```
+
+  JS 端:
+
+  ```js
+  getPromiseTime() {
+    NativeModules.TransMissonMoudle.sendPromiseTime("Allure").then(msg=> {
+        console.log("年龄:" + msg.age + "/n" + "时间:" + msg.time);
+        ToastAndroid.show("Promise收到消息:" + "\n" + "年龄:" + msg.age + "时间:" + msg.time, ToastAndroid.SHORT)
+
+        this.setState({
+            age: msg.age,
+            time: msg.time,
+        })
+    }).catch(error=> {
+        console.log(error);
+    });
+  }
+  ```
