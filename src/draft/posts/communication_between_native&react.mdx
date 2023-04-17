@@ -1,8 +1,8 @@
 ---
-title: React Native 和原生之间通信方式
-description: 深入浅出React Native 和原生之间通信方式
-cover: mgz--1681630041678.webp?w=664&h=417
-tags: React Native|Android|iOS|communication
+title: React Native 实用技巧
+description: 收集各种 React Native 开发中的实用技巧
+cover: MgqK-1681747908436.png?w=2401&h=1350
+tags: React Native|Android|communication
 status: common
 date: 2023-04-16
 ---
@@ -69,13 +69,18 @@ sendTransMisson 进行事件发送。 sendTransMisso 这个方法名可以任意
 
 ```js
 useEffect(() => {
-  DeviceEventEmitter.addListener('EventName', (msg) => {
+  const emitter = DeviceEventEmitter.addListener('EventName', (msg) => {
     console.log(msg);
     ToastAndroid.show(
       'DeviceEventEmitter 收到消息：' + '\n' + msg.key,
       ToastAndroid.SHORT
     );
   });
+  return () => {
+    // 清除全部事件监听
+    // DeviceEventEmitter.removeAllListener();
+    emitter.removeListener(); // 清除对应事件监听
+  };
 }, []);
 ```
 
@@ -133,3 +138,54 @@ useEffect(() => {
     });
   }
   ```
+
+### Native Component 自定义事件
+
+如果要在封装的 Native Component 上提供自定义事件给 RN ，需要实现 `getExportedCustomBubblingEventTypeConstants` 或 `getExportedCustomDirectEventTypeConstants`
+这两者差别在于事件是否支持冒泡、捕获。使用 `getExportedCustomBubblingEventTypeConstants` 声明的事件可以实现代理功能，分别支持冒泡、捕获。具体代码如下:
+
+```java
+@Override
+    public Map<String, Object> getExportedCustomBubblingEventTypeConstants() {
+        return MapBuilder.<String, Object>builder()
+                .put("onBubblingEvent",
+                    MapBuilder.of("phasedRegistrationNames",
+                        MapBuilder.of(
+                            "bubbled", "onBubble", // 冒泡事件
+                            "captured", "onCapture" // 捕获事件
+                          )
+                        )
+                    )
+                .build();
+    }
+```
+
+在原生层使用如下方式发送事件：
+
+```java
+WritableMap event2 = Arguments.createMap();
+event2.putString("message", "onBubblingEvent");
+// 注意：RCTEventEmitter 在最近的版本中已经处于废弃阶段，而新的方式没有文档提供 ？？
+reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(),"onBubblingEvent",event2);
+```
+
+## Native Component 动态显示 View
+
+在 Native Component 中如果动态渲染 View 或其他元素，需要在 Native Component 自定义的 Layout 类的 constructor 中注册 autoLayout 的监听方法。具体代码如下：
+
+```java
+//  when add View , auto layout
+Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() {
+  @Override
+  public void doFrame(long frameTimeNanos) {
+    for (int i = 0; i < getChildCount(); i++) {
+      View child = getChildAt(i);
+      child.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth(), MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(getMeasuredHeight(), MeasureSpec.EXACTLY));
+      child.layout(0, 0, child.getMeasuredWidth(), child.getMeasuredHeight());
+    }
+    getViewTreeObserver().dispatchOnGlobalLayout();
+    Choreographer.getInstance().postFrameCallback(this);
+  }
+});
+```

@@ -22,7 +22,7 @@ const maxSize = 5200000; // 5MB == 5242848.754299136
 const options = {
   method: 'POST',
   hostname: 'tinypng.com',
-  path: '/web/shrink',
+  path: '/backend/opt/shrink',
   headers: {
     rejectUnauthorized: false,
     'Postman-Token': Date.now(),
