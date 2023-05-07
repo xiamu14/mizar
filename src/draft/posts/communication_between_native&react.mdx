@@ -160,6 +160,19 @@ useEffect(() => {
     }
 ```
 
+or
+
+```java
+    @Nullable
+    @Override
+    public Map getExportedCustomDirectEventTypeConstants() {
+        //第一个Login 注册的名字  第二个registrationName不可以改变 第三个js回调方法
+        return MapBuilder.<String, Object>builder()
+                .put("onRefreshReleased", MapBuilder.of("registrationName", "onRefreshReleased"))
+                .build();
+    }
+```
+
 在原生层使用如下方式发送事件：
 
 ```java
@@ -168,6 +181,28 @@ event2.putString("message", "onBubblingEvent");
 // 注意：RCTEventEmitter 在最近的版本中已经处于废弃阶段，而新的方式没有文档提供 ？？
 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(),"onBubblingEvent",event2);
 ```
+
+似乎与 CustomView 里的 Key 有关系
+
+```java
+...
+//            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
+//                    refreshlayout.getId(),//实例的ID native和js两个视图会依据getId()而关联在一起
+//                    eventName,//事件名称
+//                    params
+//            );
+            //原生模块发送事件
+            reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                    .emit(this.Key+eventName, params); // Key 通过 setKey 方法注入
+...
+@ReactProp(name = "Key")
+    public void setKey(final SmartRefreshLayout refreshLayout,final String Key) {
+        this.Key = Key;
+    }
+```
+
+> 参考第三方组件： [PullLayout.java](https://github.com/wuyunqiang/AndroidToRN/blob/master/testApp/app/src/main/java/com/example/wuyunqiang/testapp/rnview/PullLayout.java)
 
 ## Native Component 动态显示 View
 
@@ -189,3 +224,47 @@ Choreographer.getInstance().postFrameCallback(new Choreographer.FrameCallback() 
   }
 });
 ```
+
+or
+
+```java
+@Override
+  public void requestLayout() {
+    super.requestLayout();
+    post(measureAndLayout);
+  }
+
+  private final Runnable measureAndLayout = new Runnable() {
+    @Override
+    public void run() {
+      measure(
+        MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+        MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+      layout(getLeft(), getTop(), getRight(), getBottom());
+    }
+  };
+```
+
+#### 遇到的坑
+
+当原生里动态添加元素（且宽高未知），希望 CustomView 能自适应内容宽高，然而，CustomView 必须设置固定的宽高值才能显示。
+
+后续研究：
+
+- [Android 自定义 View：为什么你设置的 wrap_content 不起作用？](https://www.jianshu.com/p/ca118d704b5e)
+
+- [Cannot resize linear layout children in android react native module](https://stackoverflow.com/questions/38934776/cannot-resize-linear-layout-children-in-android-react-native-module/39105650#39105650)
+
+- [聊聊 RN 中 Android 提供 View 的那些坑](https://musicfe.com/rn-android-webview/)
+
+### 资料
+
+- [浅谈 RN 如何封装用 Kotlin 编写的 ViewGroup 类型的视图](https://zhuanlan.zhihu.com/p/349294382)
+
+- [React Native 启动速度优化——Native 篇](https://supercodepower.com/react-native-performance-native)
+
+- [React Native の Native Module 化について（Android）](https://zenn.dev/aldagram_tech/articles/a89fac17788a3e)
+
+- [【React Native】Native UI Components で Android のネイティブのビューを表示する](https://zenn.dev/aldagram_tech/articles/76f49e46e37cc1)
+
+- [使用 Kotlin 和 Swift 为 React Native 构建原生模块 (翻译转载)](https://juejin.cn/post/7195479836813590583)
