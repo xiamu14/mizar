@@ -178,31 +178,11 @@ or
 ```java
 WritableMap event2 = Arguments.createMap();
 event2.putString("message", "onBubblingEvent");
-// 注意：RCTEventEmitter 在最近的版本中已经处于废弃阶段，而新的方式没有文档提供 ？？
+// 注意：RCTEventEmitter 在最近的版本中已经处于废弃阶段
 reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(getId(),"onBubblingEvent",event2);
 ```
 
-似乎与 CustomView 里的 Key 有关系
-
-```java
-...
-//            reactContext.getJSModule(RCTEventEmitter.class).receiveEvent(
-//                    refreshlayout.getId(),//实例的ID native和js两个视图会依据getId()而关联在一起
-//                    eventName,//事件名称
-//                    params
-//            );
-            //原生模块发送事件
-            reactContext
-                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit(this.Key+eventName, params); // Key 通过 setKey 方法注入
-...
-@ReactProp(name = "Key")
-    public void setKey(final SmartRefreshLayout refreshLayout,final String Key) {
-        this.Key = Key;
-    }
-```
-
-> 参考第三方组件： [PullLayout.java](https://github.com/wuyunqiang/AndroidToRN/blob/master/testApp/app/src/main/java/com/example/wuyunqiang/testapp/rnview/PullLayout.java)
+> RCTEventEmitter 被废弃的问题，查看这篇文章 [RCTEventEmitter 和 RCTModernEventEmitter 的替代品是什么？](https://www.qiniu.com/qfans/qnso-73033869)
 
 ## Native Component 动态显示 View
 
