@@ -68,6 +68,7 @@ const Snippet = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'src/draft',
+  disableImportAliasWarning: true,
   documentTypes: [Post, Snippet],
   mdx: {
     rehypePlugins: [rehypePrism, rehypeSlug],

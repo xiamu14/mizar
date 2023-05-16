@@ -239,7 +239,23 @@ or
 
 - [Measure a custom component in React Native on Android](https://nicholasmarais1158.github.io/2017/07/React-Native-Custom-Measuring)
 
-### 资料
+解决方案：使用离屏渲染，先在 dectorView 里设置 wrap_content 并渲染（设置不可见），然后获取渲染后的宽高，再在 RN 组件树里渲染，并回传宽高。「实践可行」
+
+## 在 Android Studio 中离线打包
+
+使用 ./gradlew 脚本打包，偶尔出现未知错误，如果希望通过 AS 打包，则可以使用如下方式：
+
+1. 先构建出 index.android.bundle 文件，并复制到 android 项目目录，命令如下：
+   `yarn react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle`
+
+2. 在 AS 中设置好对应的 keystore，然后在菜单栏依次点击 [Build] -> [generate singed bundle/apk]
+
+## react-native-config
+
+如果修改了 .env 文件里的内容，需要在 AS 里执行 `clean project` 和 `rebuild project`，才能生成新的 BuildConfig 文件。
+命令行里添加 `--reset-cache`。
+
+## 资料
 
 - [浅谈 RN 如何封装用 Kotlin 编写的 ViewGroup 类型的视图](https://zhuanlan.zhihu.com/p/349294382)
 
@@ -252,3 +268,9 @@ or
 - [使用 Kotlin 和 Swift 为 React Native 构建原生模块 (翻译转载)](https://juejin.cn/post/7195479836813590583)
 
 - [如何在 React Native 中添加闪屏](https://juejin.cn/post/7125638752721960991#heading-7)
+
+- [Custom Animated Circular Progress In React Native](https://blog.openreplay.com/custom-animated-circular-progress-for-react-native/)
+
+- [React Native 原生组件封装：将 View 作为参数传入原生组件](https://zhuanlan.zhihu.com/p/28799235)
+
+- [RN APP 打开通知权限](https://blog.csdn.net/weixin_43051145/article/details/129550691)
