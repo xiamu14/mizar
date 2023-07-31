@@ -1,0 +1,14 @@
+---
+title: 'Create Unique Id'
+description: '生成代码里唯一的 ID'
+cover: mq8G-1690783619485.webp
+date: 2023-07-31
+---
+
+```ts
+export function createId() {
+  return (
+    Math.random().toString(36).substring(2) + new Date().getTime().toString(36)
+  );
+}
+```
