@@ -1,0 +1,30 @@
+---
+title: 微信公众号开发知识
+description: 和微信公众好开发有关的知识
+cover: dB2S-1697017738782.png
+tags: weixin|JSSDK
+status: common
+date: 2023-10-11
+---
+
+## 微信公众号开发
+
+### 通过 js 关闭微信浏览器页面
+
+```js
+// 使用 WeixinJSBridge
+WeixinJSBridge.call('closeWindow');
+
+// 引入 jsSDK
+wx.closeWindow();
+```
+
+### `updateAppMessageShareData` 回调函数触发时机
+
+自定义分享内容的 api `updateAppMessageShareData` 的回调函数不是在分享完成以后触发，而是在设置分享内容成功以后触发，两者差别很大。
+
+> 如果需要分享成功触发一些操作，不要使用新的分享 api 如：
+> 自定义“分享给朋友”及“分享到 QQ”按钮的分享内容（1.4.0）- updateTimelineShareData
+> 不要将 updateTimelineShareData 等在 jsApiList 中 列出，依旧使用旧的 api,微信只是说即将废弃，几年了也没见废弃
+
+[微信开发方解释](https://developers.weixin.qq.com/community/develop/doc/0000447a5b431807af57249a551408?highLine=%25E5%2588%2586%25E4%25BA%25AB%25E5%259B%259E%25E8%25B0%2583)

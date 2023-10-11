@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "tinypng": "node scripts/tinypng.mjs"
+    "nanopng": "node scripts/tinypng.mjs"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
@@ -20,6 +20,7 @@
     "eslint-config-next": "13.0.5",
     "konva": "^8.3.14",
     "lodash-es": "^4.17.21",
+    "nanopng": "^1.0.3",
     "next": "13.0.5",
     "next-contentlayer": "^0.2.9",
     "parse-markdown-table": "^0.0.6",

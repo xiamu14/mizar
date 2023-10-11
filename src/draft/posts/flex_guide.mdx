@@ -1,0 +1,14 @@
+---
+title: Flex 注意
+description: 容易出问题的地方
+cover: z7lq-1670719153385.avif?w=2070&h=1380
+tags: flex|css
+status: common
+date: 2023-08-15
+---
+
+## flex-grow:1
+
+1. 设置元素的宽度等于父容器剩余内容的宽度时，要给元素添加 `overflow:hidden`，避免元素被子元素撑开。
+
+2. 设置元素的高度等于父容器剩余内容的高度时，同时父容器也是通过 `flex-grow:1`获得其父容器高度时，则该父容器必须添加 `height:0`(值不影响)
