@@ -28,3 +28,9 @@ wx.closeWindow();
 > 不要将 updateTimelineShareData 等在 jsApiList 中 列出，依旧使用旧的 api,微信只是说即将废弃，几年了也没见废弃
 
 [微信开发方解释](https://developers.weixin.qq.com/community/develop/doc/0000447a5b431807af57249a551408?highLine=%25E5%2588%2586%25E4%25BA%25AB%25E5%259B%259E%25E8%25B0%2583)
+
+测试分享时，直接从链接访问网页时，无法自定义分享内容，需要从下面的几种方式访问网页：
+
+1. 公众号菜单访问
+2. 二维码扫码访问
+3. 分享出来的卡片访问

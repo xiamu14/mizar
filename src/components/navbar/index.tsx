@@ -21,7 +21,7 @@ function $Navbar() {
   }, [router.asPath]);
   return (
     <div className={style['navbar']}>
-      <Image src="/images/logo.svg" alt="logo" width={32} height={32} />
+      <Image src="/images/logo0.svg" alt="logo" width={32} height={32} />
       <nav className={style['nav']}>
         <NavItem href="/" text="言之有物" isActive={active === ''} />
         <NavItem
