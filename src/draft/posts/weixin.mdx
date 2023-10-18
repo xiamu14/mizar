@@ -34,3 +34,20 @@ wx.closeWindow();
 1. 公众号菜单访问
 2. 二维码扫码访问
 3. 分享出来的卡片访问
+
+### 微信内置浏览器私有接口 WeixinJSBridge 介绍
+
+`微信 JS-SDK` 属于 JSBridge 的一种实现。通过 JS-SDK 代码可以发现：
+
+- 其中的 this（即参数 e）此时就是指向全局的 window 对象
+- 在代码中使用的 window.wx 实际上是 e.jWeixin 也是其中定义的 N 对象
+- 而在 N 对象中定义的各种方法实际上又是通过 e.WeixinJSBridge 上的方法来实际执行的
+- e.WeixinJSBridge 就是由 微信内置浏览器 向 window 对象中注入 WeiXinJsBridge 接口实现的
+
+依赖 `WeixinJSBridge` 的方法必须在 `WeixinJSBridgeReady` 以后调用。
+如何监听 `WeixinJSBridgeReady`
+
+- JS-SDK 里也有 `ready` 的方法，也依赖于 `WeixinJSBridgeReady`，但 `ready` 是在 `config` 方法调用后才会触发监听，无法单独使用。
+- 如果不依赖 `config`，则可以使用 `document.addEventListener("WeixinJSBridgeReady")`
+
+比如其中微信会员卡，或者支付就可以不依赖 `config` 而只需要监听 `WeixinJSBridgeReady` 完成即可
