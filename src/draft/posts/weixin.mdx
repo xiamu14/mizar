@@ -51,3 +51,15 @@ wx.closeWindow();
 - 如果不依赖 `config`，则可以使用 `document.addEventListener("WeixinJSBridgeReady")`
 
 比如其中微信会员卡，或者支付就可以不依赖 `config` 而只需要监听 `WeixinJSBridgeReady` 完成即可
+
+代码片段如下:
+
+```js
+if (typeof window.WeixinJSBridge == 'undefined') {
+  document.addEventListener('WeixinJSBridgeReady', function () {
+    // do something
+  });
+} else {
+  //  delay
+}
+```
