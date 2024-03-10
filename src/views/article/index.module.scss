@@ -1,5 +1,5 @@
 .box {
-  max-width: 876px;
+  max-width: 790px;
   margin: 0 auto;
 }
 
@@ -7,15 +7,18 @@
   margin-bottom: 50px;
 
   text-align: center;
+
   .title {
     margin-bottom: 20px;
 
     cursor: pointer;
   }
+
   .description {
     color: #8c8c8c;
   }
 }
+
 .container {
   display: grid;
 
@@ -25,6 +28,7 @@
 
 .content {
   grid-column: span 4 / auto;
+
   .cover {
     position: relative;
 
@@ -34,19 +38,22 @@
 
     border-radius: 20px;
   }
+
   .info {
     margin: 20px 0;
 
-    color: #bcbcbc;
+    color: #9d9d9d;
 
     font-size: 14px;
   }
 }
+
 .aside {
   position: sticky;
   top: 168px;
 
   grid-column: span 1 / auto;
+
   .placeholder {
     width: 100%;
     min-height: 35%;

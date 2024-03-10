@@ -1,20 +1,35 @@
 .navbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 
   width: 100%;
-  padding: 12px 66px;
 
   background: rgba(255, 255, 255, 0.25);
   box-shadow: rgba(149, 157, 165, 0.2) 0px 6px 24px;
 
-  gap: 16px;
   backdrop-filter: blur(20px);
+
+
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 1000px;
+    height: 60px;
+
+    gap: 16px;
+  }
+
   .nav {
     display: flex;
     align-items: center;
+
+    width: 100%;
+    max-width: 1200px;
   }
+
   .community {
     display: flex;
 

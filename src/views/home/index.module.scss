@@ -5,12 +5,14 @@
 
   gap: 40px;
   grid-template-columns: 1fr 1fr 1fr 1fr;
+
   .post-detail {
     display: grid;
 
     grid-column: span 3 / auto;
     gap: 40px;
     grid-template-columns: 1fr 1fr 1fr;
+
     .post-item-small {
       display: flex;
       flex-direction: column;
@@ -19,12 +21,14 @@
       grid-template-columns: 1fr;
       gap: 32px;
     }
+
     .post-item-big {
       order: 0;
 
       grid-column: span 2 / auto;
     }
   }
+
   .post-outline {
     position: sticky;
     top: 0;

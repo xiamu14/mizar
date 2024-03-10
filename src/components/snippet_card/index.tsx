@@ -16,7 +16,7 @@ function $SnippetCard({ title, desc, cover, slug }: Props) {
         <div className={style['cover']}>
           <MyImage src={cover}></MyImage>
         </div>
-        <h1>{title}</h1>
+        <h1 style={{ fontSize: '16px' }}>{title}</h1>
         <p>{desc}</p>
       </div>
     </Link>

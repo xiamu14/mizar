@@ -14,7 +14,7 @@ function $MapCard({ data }: Props) {
         <div className={style['cover']}>
           <MyImage src={data.cover}></MyImage>
         </div>
-        <h1>{data.name}</h1>
+        <h1 style={{ fontSize: '16px' }}>{data.name}</h1>
         <p className={style['description']}>{data.description}</p>
       </div>
     </Link>

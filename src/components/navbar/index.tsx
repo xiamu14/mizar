@@ -21,36 +21,39 @@ function $Navbar() {
   }, [router.asPath]);
   return (
     <div className={style['navbar']}>
-      <Image src="/images/logo0.svg" alt="logo" width={32} height={32} />
-      <nav className={style['nav']}>
-        <NavItem href="/" text="言之有物" isActive={active === ''} />
-        <NavItem
-          href="/snippets"
-          text="片段"
-          isActive={active === 'snippets'}
-        />
-        <NavItem href="/maps" text="目录" isActive={active === 'maps'} />
-      </nav>
-      <div className="space"></div>
-      <div className={style.community}>
-        <a
-          className="github"
-          href="https://github.com/xiamu14"
-          title="github"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <BsGithub size={20} />
-        </a>
-        <a
-          className="twitter"
-          href="https://twitter.com/BenjarminX"
-          title="@BenjarminX"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <BsTwitter size={20} />
-        </a>
+      <div className={style['container']}>
+        <Image src="/images/logo0.svg" alt="logo" width={32} height={32} />
+        <div className="space"></div>
+        <nav className={style['nav']}>
+          <NavItem href="/" text="言之有物" isActive={active === ''} />
+          <NavItem
+            href="/snippets"
+            text="片段"
+            isActive={active === 'snippets'}
+          />
+          <NavItem href="/maps" text="目录" isActive={active === 'maps'} />
+        </nav>
+
+        <div className={style.community}>
+          <a
+            className="github"
+            href="https://github.com/xiamu14"
+            title="github"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <BsGithub size={20} />
+          </a>
+          <a
+            className="twitter"
+            href="https://twitter.com/BenjarminX"
+            title="@BenjarminX"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <BsTwitter size={20} />
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 .list-container {
   display: grid;
 
+  width: 100%;
   padding: 30px 0;
 
-  grid-template-columns: repeat(3, 1fr);
-  column-gap: 80px;
-  row-gap: 60px;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 36px;
+  row-gap: 20px;
 }

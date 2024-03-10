@@ -20,9 +20,7 @@ export default function Index() {
             <Router></Router>
           </ContentWidth>
         </div>
-        <div>
-          <Footer />
-        </div>
+        <Footer />
       </div>
     </GeistProvider>
   );
